@@ -5,6 +5,7 @@
 package Main;
 
 
+import Model.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -35,7 +36,7 @@ public class EasyGrapher extends Application {
     private static double xOffset = 0;
     private static double yOffset = 0;
 
-    private static int lineCycle = 1;
+    private static int lineCycle = 4;
     private static double squareCycle = 1;
 
     @Override
@@ -88,6 +89,9 @@ public class EasyGrapher extends Application {
             drawAxeIncrements(axesGc);
             drawFunction(graphGc);
             drawLines(axesGc);
+
+            System.out.println("SCALE_X: " + xScale);
+            System.out.println("SCALE_Y: " + yScale);
         });
 
         graphAndTitle.getChildren().add(canvasContainer);
@@ -154,10 +158,10 @@ public class EasyGrapher extends Application {
 
         gc.fillText("0", originX - 10, originY + 15);
 
-        for (double h = 0; h < (double) canvasWidth / 2; h += 60) {
+        for (double h = 0; h < (double) canvasWidth / 2; h += xScale * Math.max(Math.round(60 / xScale), 1) * squareCycle) {
             if (h != 0) {
 //                String text = reduce(h / xScale);
-                String text = String.format("%.1f", h / xScale);
+                String text = String.format("%.2f", h / xScale);
 
                 gc.fillText("-" + text, originX - h - 10, originY + 20);
                 gc.fillText(text, originX + h - 10, originY + 20);
@@ -181,7 +185,7 @@ public class EasyGrapher extends Application {
         int originX = canvasWidth / 2;
         int originY = canvasHeight / 2;
 
-        for (double h = 0; h < (double) canvasWidth / 2; h += (double) 60 / (lineCycle % 3 + 2) * squareCycle) {
+        for (double h = 0; h < (double) canvasWidth / 2; h += xScale * Math.max(Math.round(60 / xScale), 1) / (lineCycle % 3 + 3) * squareCycle) {
             if (h / xScale % 1 == 0) {
                 continue;
             }
@@ -194,7 +198,7 @@ public class EasyGrapher extends Application {
 
         gc.setGlobalAlpha(0.5);
 
-        for (double h = 0; h < (double) canvasWidth / 2; h += 60 * squareCycle) {
+        for (double h = 0; h < (double) canvasWidth / 2; h += xScale * Math.max(Math.round(60 / xScale), 1) * squareCycle) {
             gc.strokeLine(originX - h, 0, originX - h, canvasHeight);
             gc.strokeLine(originX + h, 0, originX + h, canvasHeight);
             gc.strokeLine(0, originY + h, canvasWidth, originY + h);
@@ -207,6 +211,8 @@ public class EasyGrapher extends Application {
         gc.setStroke(Color.BLUE);
         gc.setGlobalAlpha(1.0);
 
+        Function f = new Function("x^3");
+
         int originX = canvasWidth / 2;
         int originY = canvasHeight / 2;
 
@@ -214,13 +220,13 @@ public class EasyGrapher extends Application {
             double mathX1 = x / xScale;
             double mathX2 = (x + 1) / xScale;
 
-            double mathY1 = Math.pow(mathX1, 0.5);
-            double mathY2 = Math.pow(mathX2, 0.5);
+            double mathY1 = f.valueAt(mathX1);
+            double mathY2 = f.valueAt(mathX2);
 
             double canvasX1 = originX + x;
             double canvasY1 = originY - mathY1 * yScale;
             double canvasX2 = originX + x + 1;
-            double canvasY2 = originX - mathY2 * yScale;
+            double canvasY2 = originY - mathY2 * yScale;
 
             gc.strokeLine(canvasX1, canvasY1, canvasX2, canvasY2);
         }
