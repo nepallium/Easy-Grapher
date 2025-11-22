@@ -32,7 +32,11 @@ public class EasyGrapher extends Application {
     private static double xScale = 60;
     private static double yScale = 60;
 
+    private static double xOffset = 0;
+    private static double yOffset = 0;
+
     private static int lineCycle = 1;
+    private static double squareCycle = 1;
 
     @Override
     public void start(Stage stage) {
@@ -62,9 +66,11 @@ public class EasyGrapher extends Application {
             if (scroll.getDeltaY() < 0) {
                 xScale *= 0.9;
                 yScale *= 0.9;
+                squareCycle = (squareCycle - 0.25) % 1 + 1;
             } else {
                 xScale /= 0.9;
                 yScale /= 0.9;
+                squareCycle = (squareCycle + 0.25) % 1 + 1;
             }
 
             if (xScale <= 1) {
@@ -99,6 +105,12 @@ public class EasyGrapher extends Application {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
+        canvasContainer.setOnMouseDragged((MouseEvent mouseMovement) -> {
+            System.out.println("X: " + mouseMovement.getX());
+            System.out.println("Y: " + mouseMovement.getY());
+            System.out.println("Z: " + mouseMovement.getZ());
+        });
     }
 
 //    public String reduce(double decimal) {
@@ -169,7 +181,20 @@ public class EasyGrapher extends Application {
         int originX = canvasWidth / 2;
         int originY = canvasHeight / 2;
 
-        for (double h = 0; h < (double) canvasWidth / 2; h += (double) 60 / (lineCycle % 3 + 2)) {
+        for (double h = 0; h < (double) canvasWidth / 2; h += (double) 60 / (lineCycle % 3 + 2) * squareCycle) {
+            if (h / xScale % 1 == 0) {
+                continue;
+            }
+
+            gc.strokeLine(originX - h, 0, originX - h, canvasHeight);
+            gc.strokeLine(originX + h, 0, originX + h, canvasHeight);
+            gc.strokeLine(0, originY + h, canvasWidth, originY + h);
+            gc.strokeLine(0, originY - h, canvasWidth, originY - h);
+        }
+
+        gc.setGlobalAlpha(0.5);
+
+        for (double h = 0; h < (double) canvasWidth / 2; h += 60 * squareCycle) {
             gc.strokeLine(originX - h, 0, originX - h, canvasHeight);
             gc.strokeLine(originX + h, 0, originX + h, canvasHeight);
             gc.strokeLine(0, originY + h, canvasWidth, originY + h);
