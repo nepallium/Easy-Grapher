@@ -30,8 +30,8 @@ public class EasyGrapher extends Application {
     private static final int canvasWidth = 800;
     private static final int canvasHeight = 800;
 
-    private static double xScale = 60;
-    private static double yScale = 60;
+    private static double xScale = 80;
+    private static double yScale = 80;
 
     private static double xOffset = 0;
     private static double yOffset = 0;
@@ -124,6 +124,23 @@ public class EasyGrapher extends Application {
 
     // DRAWING LOGIC
 
+    private double computeTickStep(double scale) {
+        double targetPixels = 80;
+
+        double mathUnit = targetPixels / scale;
+
+        double exp = Math.pow(10, Math.floor(Math.log10(mathUnit)));
+        double base = mathUnit / exp;
+
+        double closestPerfect;
+        if (base < 1.5)      closestPerfect = 1;
+        else if (base < 3.5) closestPerfect = 2;
+        else if (base < 7.5) closestPerfect = 5;
+        else                     closestPerfect = 10;
+
+        return closestPerfect * exp;
+    }
+
     public void drawAxes(GraphicsContext gc) {
         gc.setLineWidth(1);
         gc.setStroke(Color.BLACK);
@@ -137,32 +154,44 @@ public class EasyGrapher extends Application {
     }
 
     public void drawAxeIncrements(GraphicsContext gc) {
-        gc.setLineWidth(1);
         gc.setStroke(Color.BLACK);
-        gc.setGlobalAlpha(1.0);
+        gc.setLineWidth(1);
 
         int originX = canvasWidth / 2;
         int originY = canvasHeight / 2;
 
-        gc.fillText("0", originX - 10, originY + 15);
+        double xStep = computeTickStep(xScale);
+        double yStep = computeTickStep(yScale);
 
-        for (double h = 0; h < (double) canvasWidth / 2; h += xScale * Math.max(Math.round(60 / xScale), 1) * squareCycle) {
-            if (h != 0) {
-//                String text = reduce(h / xScale);
-                String text = String.format("%.2f", h / xScale);
+        // X Axis ticks
+        for (double x = 0; x < canvasWidth / xScale; x += xStep) {
+            double pxr = originX + x * xScale;
+            double pxl = originX - x * xScale;
 
-                gc.fillText("-" + text, originX - h - 10, originY + 20);
-                gc.fillText(text, originX + h - 10, originY + 20);
-                gc.fillText("-" + text, originX - 20, originY + h + 10);
-                gc.fillText(text, originX - 20, originY - h + 10);
+            gc.strokeLine(pxr, originY - 5, pxr, originY + 5);
+            gc.strokeLine(pxl, originY - 5, pxl, originY + 5);
+
+            if (x != 0) {
+                gc.fillText(String.format("%.2f", x), pxr + 2, originY + 15);
+                gc.fillText(String.format("%.2f", -x), pxl + 2, originY + 15);
             }
+        }
 
-            gc.strokeLine(originX - h, originY - 5, originX - h, originY + 5);
-            gc.strokeLine(originX + h, originY - 5, originX + h, originY + 5);
-            gc.strokeLine(originX - 5, originY + h, originX + 5, originY + h);
-            gc.strokeLine(originX - 5, originY - h, originX + 5, originY - h);
+        // Y Axis ticks
+        for (double y = 0; y < canvasHeight / yScale; y += yStep) {
+            double pyr = originY - y * yScale;
+            double pyl = originY + y * yScale;
+
+            gc.strokeLine(originX - 5, pyr, originX + 5, pyr);
+            gc.strokeLine(originX - 5, pyl, originX + 5, pyl);
+
+            if (y != 0) {
+                gc.fillText(String.format("%.2f", y), originX + 10, pyr + 4);
+                gc.fillText(String.format("%.2f", -y), originX + 10, pyl + 4);
+            }
         }
     }
+
 
     public void drawLines(GraphicsContext gc) {
         gc.setLineWidth(1);
