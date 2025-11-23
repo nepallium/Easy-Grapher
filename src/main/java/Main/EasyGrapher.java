@@ -30,11 +30,17 @@ public class EasyGrapher extends Application {
     private static final int canvasWidth = 800;
     private static final int canvasHeight = 800;
 
-    private static double xScale = 80;
-    private static double yScale = 80;
+    private static double xScale = 200;
+    private static double yScale = 200;
 
     private static double xOffset = 0;
     private static double yOffset = 0;
+
+    int centerX = canvasWidth / 2;
+    int centerY = canvasHeight / 2;
+
+    private static double prevMouseX = 0;
+    private static double prevMouseY = 0;
 
     private static int lineCycle = 4;
     private static double squareCycle = 1;
@@ -56,10 +62,28 @@ public class EasyGrapher extends Application {
         GraphicsContext axesGc = axesCanvas.getGraphicsContext2D();
 
         Canvas graphCanvas = new Canvas(800, 800);
-        GraphicsContext graphGc = axesCanvas.getGraphicsContext2D();
+        GraphicsContext graphGc = graphCanvas.getGraphicsContext2D();
 
         StackPane canvasContainer = new StackPane(axesCanvas, graphCanvas);
         canvasContainer.setStyle("-fx-border-color: black; -fx-border-width: 2;");
+
+        canvasContainer.setOnMousePressed((MouseEvent mousePress) -> {
+            prevMouseX = mousePress.getX();
+            prevMouseY = mousePress.getY();
+        });
+
+        canvasContainer.setOnMouseDragged(event -> {
+            double delta_x = event.getX() - prevMouseX;
+            double delta_y = event.getY() - prevMouseY;
+
+            xOffset -= delta_x / xScale;
+            yOffset += delta_y / yScale;
+
+            prevMouseX = event.getX();
+            prevMouseY = event.getY();
+
+            redraw(axesGc, graphGc);
+        });
 
         canvasContainer.setOnScroll((ScrollEvent scroll) -> {
             System.out.println(scroll.getDeltaX() + ", " + scroll.getDeltaY());
@@ -104,13 +128,27 @@ public class EasyGrapher extends Application {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-
-        canvasContainer.setOnMouseDragged((MouseEvent mouseMovement) -> {
-            System.out.println("X: " + mouseMovement.getX());
-            System.out.println("Y: " + mouseMovement.getY());
-            System.out.println("Z: " + mouseMovement.getZ());
-        });
     }
+
+    // COMPUTE OFFSETS
+
+    double xFromPixel(double px) {
+        return (px - centerX) / xScale + xOffset;
+    }
+
+    double yFromPixel(double py) {
+        return (centerY - py) / yScale + yOffset;
+    }
+
+    double xToPixel(double x) {
+        return centerX + (x - xOffset) * xScale;
+    }
+
+    double yToPixel(double y) {
+        return centerY - (y - yOffset) * yScale;
+    }
+
+    // REFRESH METHOD
 
     private void redraw(GraphicsContext axesGc, GraphicsContext graphGc) {
         axesGc.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -155,103 +193,103 @@ public class EasyGrapher extends Application {
     }
 
     public void drawAxes(GraphicsContext gc) {
-        gc.setLineWidth(1);
+        gc.setLineWidth(2);
         gc.setStroke(Color.BLACK);
-        gc.setGlobalAlpha(1.0);
 
-        int originX = canvasWidth / 2;
-        int originY = canvasHeight / 2;
+        double xAxisWithOffset = xToPixel(0);
+        double yAxisWithOffset = yToPixel(0);
 
-        gc.strokeLine(0, originY, canvasWidth, originY);
-        gc.strokeLine(originX, 0, originX, canvasHeight);
+        if (xAxisWithOffset >= 0 && xAxisWithOffset <= canvasWidth) {
+            gc.strokeLine(xAxisWithOffset, 0, xAxisWithOffset, canvasHeight);
+        }
+
+        if (yAxisWithOffset >= 0 && yAxisWithOffset <= canvasHeight) {
+            gc.strokeLine(0, yAxisWithOffset, canvasWidth, yAxisWithOffset);
+        }
     }
 
     public void drawAxeIncrements(GraphicsContext gc) {
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1);
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(12));
 
-        int originX = canvasWidth / 2;
-        int originY = canvasHeight / 2;
+        double xStep = computeTickStep(xScale);
+        double yStep = computeTickStep(yScale);
 
-        double xTickStep = computeTickStep(xScale);
-        double yTickStep = computeTickStep(yScale);
+        double min_x = xFromPixel(0);
+        double max_x = xFromPixel(canvasWidth);
 
-        for (double x = 0; x < canvasWidth / xScale; x += xTickStep) {
-            double left_x = originX - x * xScale;
-            double right_x = originX + x * xScale;
+        double firstX = Math.ceil(min_x / xStep) * xStep;
+        double axisYPixel = yToPixel(0);
 
-            gc.strokeLine(left_x, originY - 5, left_x, originY + 5);
-            gc.strokeLine(right_x, originY - 5, right_x, originY + 5);
-
-            if (x != 0) {
-                gc.fillText(String.format("%.2f", -x), left_x + 2, originY + 15);
-                gc.fillText(String.format("%.2f", x), right_x + 2, originY + 15);
+        for (double x = firstX; x <= max_x; x += xStep) {
+            double converted_x = xToPixel(x);
+            if (axisYPixel >= 0 && axisYPixel <= canvasHeight) {
+                gc.fillText(String.format("%.2f", x), converted_x + 3, axisYPixel - 3);
+                gc.strokeLine(converted_x, axisYPixel - 6, converted_x, axisYPixel + 6);
             }
         }
 
-        for (double y = 0; y < canvasHeight / yScale; y += yTickStep) {
-            double upper_y = originY - y * yScale;
-            double lower_y = originY + y * yScale;
+        double min_y = yFromPixel(canvasHeight);
+        double max_y = yFromPixel(0);
 
-            gc.strokeLine(originX - 5, upper_y, originX + 5, upper_y);
-            gc.strokeLine(originX - 5, lower_y, originX + 5, lower_y);
+        double firstY = Math.ceil(min_y / yStep) * yStep;
+        double axisXPixel = xToPixel(0);
 
-            if (y != 0) {
-                gc.fillText(String.format("%.2f", y), originX + 10, upper_y + 4);
-                gc.fillText(String.format("%.2f", -y), originX + 10, lower_y + 4);
+        for (double y = firstY; y <= max_y; y += yStep) {
+            double converted_y = yToPixel(y);
+            if (axisXPixel >= 0 && axisXPixel <= canvasWidth) {
+                gc.fillText(String.format("%.2f", y), axisXPixel + 4, converted_y - 4);
+                gc.strokeLine(axisXPixel - 6, converted_y, axisXPixel + 6, converted_y);
             }
         }
     }
 
     public void drawLines(GraphicsContext gc) {
+        double xStep = computeTickStep(xScale);
+        double yStep = computeTickStep(yScale);
+
+        double squarePerTick = getBase(xScale);
+
+        double minorX = xStep / squarePerTick;
+        double minorY = yStep / squarePerTick;
+
         gc.setStroke(Color.DARKGRAY);
+        gc.setLineWidth(1);
         gc.setGlobalAlpha(0.2);
 
-        int originX = canvasWidth / 2;
-        int originY = canvasHeight / 2;
+        drawLinesX(gc, minorX);
+        drawLinesY(gc, minorY);
 
-        double xTickStep = computeTickStep(xScale);
-        double yTickStep = computeTickStep(yScale);
+        gc.setGlobalAlpha(0.5);
 
-        int ctr = 0;
-        double linesAmount = getBase(xScale);
-
-        for (double x = 0; x < canvasWidth / xScale; x += xTickStep / linesAmount) {
-            double right_x = originX + x * xScale;
-            double left_x = originX - x * xScale;
-            gc.strokeLine(right_x, 0, right_x, canvasHeight);
-            gc.strokeLine(left_x, 0, left_x, canvasHeight);
-        }
-
-        gc.setGlobalAlpha(0.6);
-
-        for (double x = 0; x < canvasWidth / xScale; x += xTickStep) {
-            double right_x = originX + x * xScale;
-            double left_x = originX - x * xScale;
-            gc.strokeLine(right_x, 0, right_x, canvasHeight);
-            gc.strokeLine(left_x, 0, left_x, canvasHeight);
-        }
-
-        gc.setGlobalAlpha(0.2);
-        ctr = 2;
-
-        for (double y = 0; y < canvasHeight / yScale; y += yTickStep / linesAmount) {
-            double upper_y = originY - y * yScale;
-            double lower_y = originY + y * yScale;
-            gc.strokeLine(0, upper_y, canvasWidth, upper_y);
-            gc.strokeLine(0, lower_y, canvasWidth, lower_y);
-        }
-
-        gc.setGlobalAlpha(0.6);
-
-        for (double y = 0; y < canvasHeight / yScale; y += yTickStep) {
-            double upper_y = originY - y * yScale;
-            double lower_y = originY + y * yScale;
-            gc.strokeLine(0, upper_y, canvasWidth, upper_y);
-            gc.strokeLine(0, lower_y, canvasWidth, lower_y);
-        }
+        drawLinesX(gc, xStep);
+        drawLinesY(gc, yStep);
 
         gc.setGlobalAlpha(1.0);
+    }
+
+    private void drawLinesX(GraphicsContext gc, double step) {
+        double min_x = xFromPixel(0);
+        double max_x = xFromPixel(canvasWidth);
+
+        double firstX = Math.ceil(min_x / step) * step;
+
+        for (double x = firstX; x <= max_x; x += step) {
+            double converted_x = xToPixel(x);
+            gc.strokeLine(converted_x, 0, converted_x, canvasHeight);
+        }
+    }
+
+    private void drawLinesY(GraphicsContext gc, double step) {
+        double min_y = yFromPixel(canvasHeight);
+        double max_y = yFromPixel(0);
+
+        double firstY = Math.ceil(min_y / step) * step;
+
+        for (double y = firstY; y <= max_y; y += step) {
+            double converted_y = yToPixel(y);
+            gc.strokeLine(0, converted_y, canvasWidth, converted_y);
+        }
     }
 
 
@@ -261,22 +299,18 @@ public class EasyGrapher extends Application {
 
         Function f = new Function("x^3");
 
-        int originX = canvasWidth / 2;
-        int originY = canvasHeight / 2;
+        for (int pixeled_x = 0; pixeled_x < canvasWidth - 1; pixeled_x++) {
 
-        for (double x = -originX; x < canvasWidth - originX; x++) {
-            double mathX1 = x / xScale;
-            double mathX2 = (x + 1) / xScale;
+            double x1_coordinate = xFromPixel(pixeled_x);
+            double x2_coordinate = xFromPixel(pixeled_x + 1);
 
-            double mathY1 = f.valueAt(mathX1);
-            double mathY2 = f.valueAt(mathX2);
+            double mathY1 = f.valueAt(x1_coordinate);
+            double mathY2 = f.valueAt(x2_coordinate);
 
-            double canvasX1 = originX + x;
-            double canvasY1 = originY - mathY1 * yScale;
-            double canvasX2 = originX + x + 1;
-            double canvasY2 = originY - mathY2 * yScale;
+            double y1_coordinate = yToPixel(mathY1);
+            double y2_coordinate = yToPixel(mathY2);
 
-            gc.strokeLine(canvasX1, canvasY1, canvasX2, canvasY2);
+            gc.strokeLine(pixeled_x, y1_coordinate, pixeled_x + 1, y2_coordinate);
         }
     }
 }
