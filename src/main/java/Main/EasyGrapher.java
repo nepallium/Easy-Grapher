@@ -141,6 +141,19 @@ public class EasyGrapher extends Application {
         return closestPerfect * exp;
     }
 
+    private double getBase(double scale) {
+        double targetPixels = 80;
+
+        double mathUnit = targetPixels / scale;
+        double exp = Math.pow(10, Math.floor(Math.log10(mathUnit)));
+
+        double base;
+        if (mathUnit / exp < 3.5) base = 4;
+        else base = 5;
+
+        return base;
+    }
+
     public void drawAxes(GraphicsContext gc) {
         gc.setLineWidth(1);
         gc.setStroke(Color.BLACK);
@@ -190,41 +203,61 @@ public class EasyGrapher extends Application {
         }
     }
 
-
     public void drawLines(GraphicsContext gc) {
-        gc.setLineWidth(1);
-        gc.setStroke(Color.GRAY);
+        gc.setStroke(Color.DARKGRAY);
         gc.setGlobalAlpha(0.2);
-
 
         int originX = canvasWidth / 2;
         int originY = canvasHeight / 2;
 
-        for (double h = 0; h < (double) canvasWidth / 2; h += xScale * Math.max(Math.round(60 / xScale), 1) / (lineCycle % 3 + 3) * squareCycle) {
-            if (h / xScale % 1 == 0) {
-                continue;
-            }
+        double xTickStep = computeTickStep(xScale);
+        double yTickStep = computeTickStep(yScale);
 
-            gc.strokeLine(originX - h, 0, originX - h, canvasHeight);
-            gc.strokeLine(originX + h, 0, originX + h, canvasHeight);
-            gc.strokeLine(0, originY + h, canvasWidth, originY + h);
-            gc.strokeLine(0, originY - h, canvasWidth, originY - h);
+        int ctr = 0;
+        double linesAmount = getBase(xScale);
+
+        for (double x = 0; x < canvasWidth / xScale; x += xTickStep / linesAmount) {
+            double right_x = originX + x * xScale;
+            double left_x = originX - x * xScale;
+            gc.strokeLine(right_x, 0, right_x, canvasHeight);
+            gc.strokeLine(left_x, 0, left_x, canvasHeight);
         }
 
-        gc.setGlobalAlpha(0.5);
+        gc.setGlobalAlpha(0.6);
 
-        for (double h = 0; h < (double) canvasWidth / 2; h += xScale * Math.max(Math.round(60 / xScale), 1) * squareCycle) {
-            gc.strokeLine(originX - h, 0, originX - h, canvasHeight);
-            gc.strokeLine(originX + h, 0, originX + h, canvasHeight);
-            gc.strokeLine(0, originY + h, canvasWidth, originY + h);
-            gc.strokeLine(0, originY - h, canvasWidth, originY - h);
+        for (double x = 0; x < canvasWidth / xScale; x += xTickStep) {
+            double right_x = originX + x * xScale;
+            double left_x = originX - x * xScale;
+            gc.strokeLine(right_x, 0, right_x, canvasHeight);
+            gc.strokeLine(left_x, 0, left_x, canvasHeight);
         }
+
+        gc.setGlobalAlpha(0.2);
+        ctr = 2;
+
+        for (double y = 0; y < canvasHeight / yScale; y += yTickStep / linesAmount) {
+            double upper_y = originY - y * yScale;
+            double lower_y = originY + y * yScale;
+            gc.strokeLine(0, upper_y, canvasWidth, upper_y);
+            gc.strokeLine(0, lower_y, canvasWidth, lower_y);
+        }
+
+        gc.setGlobalAlpha(0.6);
+
+        for (double y = 0; y < canvasHeight / yScale; y += yTickStep) {
+            double upper_y = originY - y * yScale;
+            double lower_y = originY + y * yScale;
+            gc.strokeLine(0, upper_y, canvasWidth, upper_y);
+            gc.strokeLine(0, lower_y, canvasWidth, lower_y);
+        }
+
+        gc.setGlobalAlpha(1.0);
     }
+
 
     public void drawFunction(GraphicsContext gc) {
         gc.setLineWidth(2);
         gc.setStroke(Color.BLUE);
-        gc.setGlobalAlpha(1.0);
 
         Function f = new Function("x^3");
 
