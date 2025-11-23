@@ -1,4 +1,277 @@
 package Controller;
 
-public class PrimaryController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import Model.Function;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+
+public class PrimaryController implements Initializable{
+
+    private static final int canvasWidth = 600;
+    private static final int canvasHeight = 600;
+
+    private static double xScale = 200;
+    private static double yScale = 200;
+
+    private static double xOffset = 0;
+    private static double yOffset = 0;
+
+    int centerX = canvasWidth / 2;
+    int centerY = canvasHeight / 2;
+
+    private static double prevMouseX = 0;
+    private static double prevMouseY = 0;
+
+    @FXML
+    public StackPane graphPane;
+    @FXML
+    public Canvas AxesCanvas;
+    @FXML
+    public Canvas FunctionCanvas1;
+    @FXML
+    public Canvas FunctionCanvas2;
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        drawFunction(FunctionCanvas1.getGraphicsContext2D());
+        drawAxes(AxesCanvas.getGraphicsContext2D());
+        drawAxeIncrements(AxesCanvas.getGraphicsContext2D());
+        drawLines(AxesCanvas.getGraphicsContext2D());
+    }
+
+    @FXML
+    private void handleMousePress(MouseEvent press) {
+        prevMouseX = press.getX();
+        prevMouseY = press.getY();
+    }
+
+    @FXML
+    private void handleMouseDrag(MouseEvent drag) {
+        double delta_x = drag.getX() - prevMouseX;
+        double delta_y = drag.getY() - prevMouseY;
+
+        xOffset -= delta_x / xScale;
+        yOffset += delta_y / yScale;
+
+        prevMouseX = drag.getX();
+        prevMouseY = drag.getY();
+
+        redraw(AxesCanvas.getGraphicsContext2D(), FunctionCanvas1.getGraphicsContext2D());
+    }
+
+    @FXML
+    private void handleMouseScroll(ScrollEvent scroll) {
+        if (scroll.getDeltaY() < 0) {
+            xScale *= 0.9;
+            yScale *= 0.9;
+        } else {
+            xScale /= 0.9;
+            yScale /= 0.9;
+        }
+
+        if (xScale <= 1) {
+            xScale = 1;
+        }
+
+        if (yScale <= 1) {
+            yScale = 1;
+        }
+
+        redraw(AxesCanvas.getGraphicsContext2D(), FunctionCanvas1.getGraphicsContext2D());
+    }
+
+    // COMPUTE OFFSETS
+
+    double xFromPixel(double px) {
+        return (px - centerX) / xScale + xOffset;
+    }
+
+    double yFromPixel(double py) {
+        return (centerY - py) / yScale + yOffset;
+    }
+
+    double xToPixel(double x) {
+        return centerX + (x - xOffset) * xScale;
+    }
+
+    double yToPixel(double y) {
+        return centerY - (y - yOffset) * yScale;
+    }
+
+    // REFRESH METHOD
+
+    private void redraw(GraphicsContext axesGc, GraphicsContext graphGc) {
+        axesGc.clearRect(0, 0, canvasWidth, canvasHeight);
+        graphGc.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        drawAxes(axesGc);
+        drawAxeIncrements(axesGc);
+        drawLines(axesGc);
+        drawFunction(graphGc);
+    }
+
+    // DRAWING LOGIC
+
+    private double computeTickStep(double scale) {
+        double targetPixels = 80;
+
+        double mathUnit = targetPixels / scale;
+
+        double exp = Math.pow(10, Math.floor(Math.log10(mathUnit)));
+        double base = mathUnit / exp;
+
+        double closestPerfect;
+        if (base < 1.5)      closestPerfect = 1;
+        else if (base < 3.5) closestPerfect = 2;
+        else if (base < 7.5) closestPerfect = 5;
+        else                     closestPerfect = 10;
+
+        return closestPerfect * exp;
+    }
+
+    private double getBase(double scale) {
+        double targetPixels = 80;
+
+        double mathUnit = targetPixels / scale;
+        double exp = Math.pow(10, Math.floor(Math.log10(mathUnit)));
+
+        double base;
+        if (mathUnit / exp < 3.5) base = 4;
+        else base = 5;
+
+        return base;
+    }
+
+    public void drawAxes(GraphicsContext gc) {
+        gc.setLineWidth(2);
+        gc.setStroke(Color.BLACK);
+
+        double xAxisWithOffset = xToPixel(0);
+        double yAxisWithOffset = yToPixel(0);
+
+        if (xAxisWithOffset >= 0 && xAxisWithOffset <= canvasWidth) {
+            gc.strokeLine(xAxisWithOffset, 0, xAxisWithOffset, canvasHeight);
+        }
+
+        if (yAxisWithOffset >= 0 && yAxisWithOffset <= canvasHeight) {
+            gc.strokeLine(0, yAxisWithOffset, canvasWidth, yAxisWithOffset);
+        }
+    }
+
+    public void drawAxeIncrements(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(12));
+
+        double xStep = computeTickStep(xScale);
+        double yStep = computeTickStep(yScale);
+
+        double min_x = xFromPixel(0);
+        double max_x = xFromPixel(canvasWidth);
+
+        double firstX = Math.ceil(min_x / xStep) * xStep;
+        double axisYPixel = yToPixel(0);
+
+        for (double x = firstX; x <= max_x; x += xStep) {
+            double converted_x = xToPixel(x);
+            if (axisYPixel >= 0 && axisYPixel <= canvasHeight) {
+                gc.fillText(String.format("%.2f", x), converted_x + 3, axisYPixel - 3);
+                gc.strokeLine(converted_x, axisYPixel - 6, converted_x, axisYPixel + 6);
+            }
+        }
+
+        double min_y = yFromPixel(canvasHeight);
+        double max_y = yFromPixel(0);
+
+        double firstY = Math.ceil(min_y / yStep) * yStep;
+        double axisXPixel = xToPixel(0);
+
+        for (double y = firstY; y <= max_y; y += yStep) {
+            double converted_y = yToPixel(y);
+            if (axisXPixel >= 0 && axisXPixel <= canvasWidth) {
+                gc.fillText(String.format("%.2f", y), axisXPixel + 4, converted_y - 4);
+                gc.strokeLine(axisXPixel - 6, converted_y, axisXPixel + 6, converted_y);
+            }
+        }
+    }
+
+    public void drawLines(GraphicsContext gc) {
+        double xStep = computeTickStep(xScale);
+        double yStep = computeTickStep(yScale);
+
+        double squarePerTick = getBase(xScale);
+
+        double minorX = xStep / squarePerTick;
+        double minorY = yStep / squarePerTick;
+
+        gc.setStroke(Color.DARKGRAY);
+        gc.setLineWidth(1);
+        gc.setGlobalAlpha(0.2);
+
+        drawLinesX(gc, minorX);
+        drawLinesY(gc, minorY);
+
+        gc.setGlobalAlpha(0.5);
+
+        drawLinesX(gc, xStep);
+        drawLinesY(gc, yStep);
+
+        gc.setGlobalAlpha(1.0);
+    }
+
+    private void drawLinesX(GraphicsContext gc, double step) {
+        double min_x = xFromPixel(0);
+        double max_x = xFromPixel(canvasWidth);
+
+        double firstX = Math.ceil(min_x / step) * step;
+
+        for (double x = firstX; x <= max_x; x += step) {
+            double converted_x = xToPixel(x);
+            gc.strokeLine(converted_x, 0, converted_x, canvasHeight);
+        }
+    }
+
+    private void drawLinesY(GraphicsContext gc, double step) {
+        double min_y = yFromPixel(canvasHeight);
+        double max_y = yFromPixel(0);
+
+        double firstY = Math.ceil(min_y / step) * step;
+
+        for (double y = firstY; y <= max_y; y += step) {
+            double converted_y = yToPixel(y);
+            gc.strokeLine(0, converted_y, canvasWidth, converted_y);
+        }
+    }
+
+
+    public void drawFunction(GraphicsContext gc) {
+        gc.setLineWidth(2);
+        gc.setStroke(Color.BLUE);
+
+        Function f = new Function("x^3");
+
+        for (int pixeled_x = 0; pixeled_x < canvasWidth - 1; pixeled_x++) {
+
+            double x1_coordinate = xFromPixel(pixeled_x);
+            double x2_coordinate = xFromPixel(pixeled_x + 1);
+
+            double mathY1 = f.valueAt(x1_coordinate);
+            double mathY2 = f.valueAt(x2_coordinate);
+
+            double y1_coordinate = yToPixel(mathY1);
+            double y2_coordinate = yToPixel(mathY2);
+
+            gc.strokeLine(pixeled_x, y1_coordinate, pixeled_x + 1, y2_coordinate);
+        }
+    }
 }
