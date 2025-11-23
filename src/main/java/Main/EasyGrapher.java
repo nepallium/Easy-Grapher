@@ -82,13 +82,8 @@ public class EasyGrapher extends Application {
                 yScale = 1;
             }
 
-            axesGc.clearRect(0, 0, 800, 800);
-            graphGc.clearRect(0, 0, 800, 800);
             lineCycle++;
-            drawAxes(axesGc);
-            drawAxeIncrements(axesGc);
-            drawFunction(graphGc);
-            drawLines(axesGc);
+            redraw(axesGc, graphGc);
 
             System.out.println("SCALE_X: " + xScale);
             System.out.println("SCALE_Y: " + yScale);
@@ -117,24 +112,17 @@ public class EasyGrapher extends Application {
         });
     }
 
-//    public String reduce(double decimal) {
-//        int ctr = 0;
-//
-//        if (Math.abs(decimal) >= 1) {
-//            return "" + (int) decimal;
-//        }
-//
-//        String text = "" + decimal;
-//
-//        System.out.println(decimal);
-//
-//        while (!Character.isDigit(text.charAt(ctr)) && text.charAt(ctr) != '0') {
-//            System.out.println("VAL: " + text.substring(0, ctr));
-//            ctr += 1;
-//        }
-//
-//        return text.substring(0, ctr);
-//    }
+    private void redraw(GraphicsContext axesGc, GraphicsContext graphGc) {
+        axesGc.clearRect(0, 0, canvasWidth, canvasHeight);
+        graphGc.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        drawAxes(axesGc);
+        drawAxeIncrements(axesGc);
+        drawLines(axesGc);
+        drawFunction(graphGc);
+    }
+
+    // DRAWING LOGIC
 
     public void drawAxes(GraphicsContext gc) {
         gc.setLineWidth(1);
