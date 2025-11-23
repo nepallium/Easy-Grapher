@@ -160,34 +160,32 @@ public class EasyGrapher extends Application {
         int originX = canvasWidth / 2;
         int originY = canvasHeight / 2;
 
-        double xStep = computeTickStep(xScale);
-        double yStep = computeTickStep(yScale);
+        double xTickStep = computeTickStep(xScale);
+        double yTickStep = computeTickStep(yScale);
 
-        // X Axis ticks
-        for (double x = 0; x < canvasWidth / xScale; x += xStep) {
-            double pxr = originX + x * xScale;
-            double pxl = originX - x * xScale;
+        for (double x = 0; x < canvasWidth / xScale; x += xTickStep) {
+            double left_x = originX - x * xScale;
+            double right_x = originX + x * xScale;
 
-            gc.strokeLine(pxr, originY - 5, pxr, originY + 5);
-            gc.strokeLine(pxl, originY - 5, pxl, originY + 5);
+            gc.strokeLine(left_x, originY - 5, left_x, originY + 5);
+            gc.strokeLine(right_x, originY - 5, right_x, originY + 5);
 
             if (x != 0) {
-                gc.fillText(String.format("%.2f", x), pxr + 2, originY + 15);
-                gc.fillText(String.format("%.2f", -x), pxl + 2, originY + 15);
+                gc.fillText(String.format("%.2f", -x), left_x + 2, originY + 15);
+                gc.fillText(String.format("%.2f", x), right_x + 2, originY + 15);
             }
         }
 
-        // Y Axis ticks
-        for (double y = 0; y < canvasHeight / yScale; y += yStep) {
-            double pyr = originY - y * yScale;
-            double pyl = originY + y * yScale;
+        for (double y = 0; y < canvasHeight / yScale; y += yTickStep) {
+            double upper_y = originY - y * yScale;
+            double lower_y = originY + y * yScale;
 
-            gc.strokeLine(originX - 5, pyr, originX + 5, pyr);
-            gc.strokeLine(originX - 5, pyl, originX + 5, pyl);
+            gc.strokeLine(originX - 5, upper_y, originX + 5, upper_y);
+            gc.strokeLine(originX - 5, lower_y, originX + 5, lower_y);
 
             if (y != 0) {
-                gc.fillText(String.format("%.2f", y), originX + 10, pyr + 4);
-                gc.fillText(String.format("%.2f", -y), originX + 10, pyl + 4);
+                gc.fillText(String.format("%.2f", y), originX + 10, upper_y + 4);
+                gc.fillText(String.format("%.2f", -y), originX + 10, lower_y + 4);
             }
         }
     }
