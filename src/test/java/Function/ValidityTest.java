@@ -29,6 +29,42 @@ public class ValidityTest {
     }
 
     @Test
+    public void testValidFunction_PiWithLetter() {
+        Function f1 = new Function("pi3");
+        assertTrue(f1.isValid());
+
+        Function f2 = new Function("3pi");
+        assertTrue(f2.isValid());
+
+        Function f3 = new Function("pisin(x)");
+        assertTrue(f3.isValid());
+
+        Function f4 = new Function("pie");
+        assertTrue("pi*e", f4.isValid());
+
+//        Function f5 = new Function("xpi");
+//        assertTrue("x*pi", f5.isValid());
+    }
+
+    @Test
+    public void testValidFunction_EulerWithLetter() {
+        Function f1 = new Function("e3");
+        assertTrue(f1.isValid());
+
+        Function f2 = new Function("3e");
+        assertTrue(f2.isValid());
+
+        Function f3 = new Function("esin(x)");
+        assertTrue(f3.isValid());
+
+        Function f4 = new Function("epi");
+        assertTrue("e*pi", f4.isValid());
+
+        Function f5 = new Function("ey");
+        assertTrue("e*y", f5.isValid());
+    }
+
+    @Test
     public void testInvalidFunction_Empty() {
         Function f = new Function("");
         assertFalse(f.isValid());

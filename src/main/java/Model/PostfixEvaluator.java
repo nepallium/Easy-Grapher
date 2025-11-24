@@ -6,6 +6,7 @@ package Model;
 
 import java.util.*;
 
+import static Model.Token.Type.*;
 import static java.lang.Double.parseDouble;
 
 /**
@@ -49,8 +50,7 @@ public class PostfixEvaluator {
             if (token != null) {
 
                 if (prevToken != null) {
-                    boolean prevIsNum = prevToken.type == Token.Type.NUMBER;
-                    boolean needMult = isNeedMult(prevToken, token, prevIsNum);
+                    boolean needMult = isNeedMult(prevToken, token);
 
                     if (needMult) {
                         tokens.add(Token.create("*", null));
@@ -65,30 +65,38 @@ public class PostfixEvaluator {
         return tokens;
     }
 
-    private static boolean isNeedMult(Token prevToken, Token token, boolean prevIsNum) {
-        boolean prevIsVar = prevToken.type == Token.Type.VARIABLE;
-        boolean prevIsCloseParen = prevToken.type == Token.Type.PARENTHESIS && prevToken.value.equals(")");
-        boolean prevIsFunc = prevToken.type == Token.Type.FUNCTION;
+    private static boolean isNeedMult(Token prevToken, Token token) {
+        boolean prevIsVar = prevToken.type == VARIABLE;
+        boolean prevIsConst = prevToken.type == CONSTANT;
+        boolean prevIsNum = prevIsConst || prevToken.type == NUMBER;
+        boolean prevIsCloseParen = prevToken.type == PARENTHESIS && prevToken.value.equals(")");
+        boolean prevIsFunc = prevToken.type == FUNCTION;
 
-        boolean currIsNum = token.type == Token.Type.NUMBER;
-        boolean currIsVar = token.type == Token.Type.VARIABLE;
-        boolean currIsOpenParen = token.type == Token.Type.PARENTHESIS && token.value.equals("(");
-        boolean currIsFunc = token.type == Token.Type.FUNCTION;
+        boolean currIsVar = token.type == VARIABLE;
+        boolean currIsConst = token.type == CONSTANT;
+        boolean currIsNum = token.type == NUMBER || currIsConst;
+        boolean currIsOpenParen = token.type == PARENTHESIS && token.value.equals("(");
+        boolean currIsFunc = token.type == FUNCTION;
 
         boolean needMult =
-                // 3x, 3(x), 3sin(x)
+                // 3x, 3pi, 3(x), 3sin(x)
                 (prevIsNum && (currIsVar || currIsOpenParen || currIsFunc)) ||
 
-                        // x3, x(x), x sin(x)
-                        (prevIsVar && (currIsOpenParen || currIsFunc)) ||
+                        // x3, xpi, x(x), x sin(x)
+                        (prevIsVar && (currIsOpenParen || currIsFunc || currIsNum)) ||
 
-                        // )(,   )x,   )3,   )sin(x)
+                        // pi3, 3e, epi
+                        ((prevIsConst && currIsConst) || (prevIsNum && currIsConst) || (prevIsConst && currIsNum)) ||
+
+                        // )(, )x, )3, )pi, )sin
                         (prevIsCloseParen && (currIsOpenParen || currIsVar || currIsNum || currIsFunc)) ||
 
                         // f(x)x
-                        (prevIsFunc && currIsVar);
+                        (prevIsFunc && (currIsVar || currIsNum));
+
         return needMult;
     }
+
 
     private ArrayList<String> splitIntoPieces(String expr) {
         if (expr == null || expr.isEmpty()) {
@@ -150,11 +158,13 @@ public class PostfixEvaluator {
         Stack<Token> operatorStack = new Stack<>();
 
         for (Token token : tokens) {
-            if (token.type == Token.Type.NUMBER || token.type == Token.Type.VARIABLE) {
+            if (token.type == NUMBER ||
+                    token.type == VARIABLE ||
+                    token.type == CONSTANT) {
                 output.add(token);
             } else if (token.value.equals("(")) {
                 operatorStack.push(token);
-            } else if (token.type == Token.Type.FUNCTION) {
+            } else if (token.type == FUNCTION) {
                 operatorStack.push(token);
             } else if (token.value.equals(")")) {
                 // if closing bracket, pop everything until "("
@@ -164,10 +174,10 @@ public class PostfixEvaluator {
                 operatorStack.pop();
 
                 // if there is a function on top, pop it too
-                if (!operatorStack.isEmpty() && operatorStack.peek().type == Token.Type.FUNCTION) {
+                if (!operatorStack.isEmpty() && operatorStack.peek().type == FUNCTION) {
                     output.add(operatorStack.pop());
                 }
-            } else if (token.type == Token.Type.OPERATOR) {
+            } else if (token.type == OPERATOR) {
                 while (!operatorStack.isEmpty() && !operatorStack.peek().value.equals("(") &&
                         // previous operator cannot be greater priority
                         (operatorStack.peek().precedence > token.precedence ||
@@ -200,9 +210,10 @@ public class PostfixEvaluator {
                 continue;
             }
 
-            if (token.type == Token.Type.NUMBER) {
+            if (token.type == NUMBER
+                    || token.type == CONSTANT) {
                 stack.push(parseDouble(token.value));
-            } else if (token.type == Token.Type.OPERATOR || token.type == Token.Type.FUNCTION) {
+            } else if (token.type == OPERATOR || token.type == FUNCTION) {
                 double[] args = new double[token.arity];
                 for (int i = token.arity - 1; i >= 0; i--) {
                     args[i] = stack.pop();
@@ -231,11 +242,12 @@ public class PostfixEvaluator {
                 continue;
             }
 
-            if (token.type == Token.Type.NUMBER) {
+            if (token.type == NUMBER
+                    || token.type == CONSTANT) {
                 stack.push(parseDouble(token.value));
-            } else if (token.type == Token.Type.VARIABLE) {
+            } else if (token.type == VARIABLE) {
                 stack.push(xVal);
-            } else if (token.type == Token.Type.OPERATOR || token.type == Token.Type.FUNCTION) {
+            } else if (token.type == OPERATOR || token.type == FUNCTION) {
                 double[] args = new double[token.arity];
                 for (int i = token.arity - 1; i >= 0; i--) {
                     args[i] = stack.pop();

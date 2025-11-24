@@ -32,7 +32,7 @@ public class Token {
             if (chr == 'x' || chr == 'y') { // TODO also check for other variables if needed
                 return new Token(Type.VARIABLE, piece, 0, 0, false);
             } else if (chr == 'e') {
-                return new Token(Type.NUMBER, String.valueOf(Math.E), 0, 0, false);
+                return new Token(Type.CONSTANT, String.valueOf(Math.E), 0, 0, false);
             } else if (chr == '(' || chr == ')') {
                 return new Token(Type.PARENTHESIS, piece, -1, 0, false);
             } else if (operators.contains(piece)) {
@@ -64,7 +64,7 @@ public class Token {
                 if (functions.contains(piece)) {
                     return new Token(Type.FUNCTION, piece, 4, 1, true);
                 } else if (piece.equals("pi")) {
-                    return new Token(Type.NUMBER, String.valueOf(Math.PI), 0, 0, false);
+                    return new Token(Type.CONSTANT, String.valueOf(Math.PI), 0, 0, false);
                 } else {
                     throw new IllegalArgumentException("Could not tokenize piece: " + piece);
                 }
