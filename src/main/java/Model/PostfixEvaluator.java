@@ -98,6 +98,9 @@ public class PostfixEvaluator {
         ArrayList<String> pieces = new ArrayList<>();
         String current = "";
         for (Character c : expr.toCharArray()) {
+            if (c == ' ') {
+                continue;
+            }
             if (Character.isDigit(c) || c == '.') {
                 if (!current.isEmpty() && Character.isLetter(current.charAt(0))) {
                     // case 5sin
@@ -119,6 +122,8 @@ public class PostfixEvaluator {
                 }
                 if (Token.operators.contains("" + c) || c == '(' || c == ')') {
                     pieces.add("" + c);
+                } else {
+                    throw new IllegalArgumentException();
                 }
             }
         }

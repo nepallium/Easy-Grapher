@@ -19,6 +19,12 @@ public class Function {
         this.postfix = null;
     }
 
+    // testing purposes
+    public Function(String exprStr, boolean ignoreValidity) {
+        this.exprStr = exprStr;
+        this.postfix = evaluator.convertInfixToPost(exprStr);
+    }
+
     public double valueAt(double x) {
         if (postfix == null) {
             return Double.NaN;
@@ -37,11 +43,11 @@ public class Function {
                     postfix = evaluator.convertInfixToPost(exprStr);
                 }
                 catch (EmptyStackException e) {
-                    System.out.println("bad parenthesis");
+//                    System.out.println("bad parenthesis");
                     return false;
                 }
                 catch (IllegalArgumentException e) {
-                    System.out.println("bad symbol");
+//                    System.out.println("bad symbol");
                     return false;
                 }
             }

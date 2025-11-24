@@ -71,6 +71,6 @@ public class RootFinder {
             return null;
         }
 
-        return new Function(String.format("%s-(%s)", f.getExprStr(), g.getExprStr()));
+        return new Function(String.format("%s-(%s)", f.getExprStr(), g.getExprStr()), true);
     }
 }

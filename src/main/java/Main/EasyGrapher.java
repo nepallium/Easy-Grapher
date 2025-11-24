@@ -297,7 +297,7 @@ public class EasyGrapher extends Application {
         gc.setLineWidth(2);
         gc.setStroke(Color.BLUE);
 
-        Function f = new Function("x^3");
+        Function f = new Function("x^3", true);
 
         for (int pixeled_x = 0; pixeled_x < canvasWidth - 1; pixeled_x++) {
 

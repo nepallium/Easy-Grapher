@@ -69,9 +69,12 @@ public class ValidityTest {
 
     @Test
     public void testInvalidFunction_InvalidCharacters() {
-        assertFalse("Illegal character $", new Function("x$2").isValid());
-        assertFalse("Illegal character #", new Function("x#y").isValid());
-        assertFalse("Illegal character @", new Function("x@3").isValid());
+        assertFalse(new Function("x$2").isValid());
+        assertFalse(new Function("x#y").isValid());
+        assertFalse(new Function("x@3").isValid());
+        assertFalse(new Function("3!").isValid());
+        assertFalse(new Function("3%").isValid());
+        assertFalse(new Function("3_").isValid());
     }
 
     @Test
