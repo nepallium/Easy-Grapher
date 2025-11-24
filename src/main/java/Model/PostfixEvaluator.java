@@ -109,7 +109,12 @@ public class PostfixEvaluator {
                 }
                 current += c; // build a number
             } else if (Character.isLetter(c)) {
-                if (!current.isEmpty() && Character.isDigit(current.charAt(0))) {
+                if (current.equals("e") || current.equals("pi")) {
+                    // case epi, pix
+                    pieces.add(current);
+                    current = "";
+                } else if (!current.isEmpty() && Character.isDigit(current.charAt(0))) {
+
                     // case sin5
                     pieces.add(current);
                     current = "";
