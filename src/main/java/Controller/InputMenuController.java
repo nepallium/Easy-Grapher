@@ -66,6 +66,18 @@ public class InputMenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
+            PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
+
+            fctInput1.textProperty().addListener((observable, oldValue, newValue) -> {
+                pause.setOnFinished(this::onFctSubmit);
+                pause.playFromStart();
+            });
+
+            fctInput2.textProperty().addListener((observable, oldValue, newValue) -> {
+                pause.setOnFinished(this::onFctSubmit);
+                pause.playFromStart();
+            });
+
             primaryController = PrimaryController.getPrimaryController();
 
             fctInput1.focusedProperty().addListener((obs, oldVal, newVal) -> {
