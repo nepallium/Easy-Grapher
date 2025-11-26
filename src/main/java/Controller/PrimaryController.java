@@ -20,10 +20,6 @@ import lombok.Getter;
 public class PrimaryController implements Initializable{
     private static PrimaryController primaryController;
 
-    public static PrimaryController getPrimaryController() {
-        return primaryController;
-    }
-
     private static final int canvasWidth = 600;
     private static final int canvasHeight = 600;
 
@@ -41,6 +37,11 @@ public class PrimaryController implements Initializable{
 
     private String firstFunctionExpression;
     private String secondFunctionExpression;
+
+    public class FunctionParams {
+        private String firstFunctionExpression;
+        private Color color;
+    }
 
     @FXML
     public StackPane graphPane;
@@ -312,5 +313,9 @@ public class PrimaryController implements Initializable{
 
     public void setSecondFunctionExpression(String secondFunctionExpression) {
         this.secondFunctionExpression = secondFunctionExpression;
+    }
+
+    public static PrimaryController getPrimaryController() {
+        return primaryController;
     }
 }
