@@ -35,8 +35,11 @@ public class PrimaryController implements Initializable{
     private static double prevMouseX = 0;
     private static double prevMouseY = 0;
 
-    private String firstFunctionExpression;
-    private String secondFunctionExpression;
+//    private String firstFunctionExpression;
+//    private String secondFunctionExpression;
+
+    private Function firstFunction;
+    private Function secondFunction;
 
     public class FunctionParams {
         private String firstFunctionExpression;
@@ -62,8 +65,11 @@ public class PrimaryController implements Initializable{
         Function1Gc = FunctionCanvas1.getGraphicsContext2D();
         Function2Gc = FunctionCanvas2.getGraphicsContext2D();
 
-        drawFunction(Function1Gc, firstFunctionExpression);
-        drawFunction(Function2Gc, secondFunctionExpression);
+        firstFunction = new Function(null);
+        secondFunction = new Function(null);
+
+        drawFunction(Function1Gc, firstFunction);
+        drawFunction(Function2Gc, secondFunction);
         drawAxes(AxesGc);
         drawAxeIncrements(AxesGc);
         drawLines(AxesGc);
@@ -109,7 +115,7 @@ public class PrimaryController implements Initializable{
             yScale = 1;
         }
 
-        System.out.println(firstFunctionExpression + ", " + secondFunctionExpression);
+        System.out.println(firstFunction.getExprStr() + ", " + secondFunction.getExprStr());
         redraw();
     }
 
@@ -141,8 +147,8 @@ public class PrimaryController implements Initializable{
         drawAxes(AxesGc);
         drawAxeIncrements(AxesGc);
         drawLines(AxesGc);
-        drawFunction(Function1Gc, firstFunctionExpression);
-        drawFunction(Function2Gc, secondFunctionExpression);
+        drawFunction(Function1Gc, firstFunction);
+        drawFunction(Function2Gc, secondFunction);
     }
 
     // DRAWING LOGIC
@@ -278,11 +284,11 @@ public class PrimaryController implements Initializable{
     }
 
 
-    public void drawFunction(GraphicsContext gc, String expr) {
+    public void drawFunction(GraphicsContext gc, Function f) {
         gc.setLineWidth(2);
         gc.setStroke(Color.BLUE);
 
-        Function f = new Function(expr, true);
+//        Function f = new Function(expr, true);
 
         for (int pixeled_x = 0; pixeled_x < canvasWidth - 1; pixeled_x++) {
 
@@ -299,20 +305,20 @@ public class PrimaryController implements Initializable{
         }
     }
 
-    public String getFirstFunctionExpression() {
-        return firstFunctionExpression;
+    public Function getFirstFunction() {
+        return firstFunction;
     }
 
-    public void setFirstFunctionExpression(String firstFunctionExpression) {
-        this.firstFunctionExpression = firstFunctionExpression;
+    public void setFirstFunction(Function firstFunction) {
+        this.firstFunction = firstFunction;
     }
 
-    public String getSecondFunctionExpression() {
-        return secondFunctionExpression;
+    public Function getSecondFunction() {
+        return secondFunction;
     }
 
-    public void setSecondFunctionExpression(String secondFunctionExpression) {
-        this.secondFunctionExpression = secondFunctionExpression;
+    public void setSecondFunction(Function secondFunction) {
+        this.secondFunction = secondFunction;
     }
 
     public static PrimaryController getPrimaryController() {

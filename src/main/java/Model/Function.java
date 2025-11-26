@@ -13,7 +13,6 @@ public class Function {
     @Getter
     private String derivativeStr;
 
-    @Getter
     private Function derivative;
 
     private boolean isValid;
@@ -91,5 +90,12 @@ public class Function {
             derivativeStr = derivativeStr.replace("log", "ln");
             derivative = new Function(derivativeStr);
         }
+    }
+
+    public Function getDerivative() {
+        if (this.derivative == null) {
+            this.evaluateDerivative();
+        }
+        return derivative;
     }
 }

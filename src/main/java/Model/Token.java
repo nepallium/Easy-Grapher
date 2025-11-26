@@ -29,7 +29,7 @@ public class Token {
         if (piece.length() == 1) {
             char chr = piece.charAt(0);
 
-            if (chr == 'x' || chr == 'y') { // TODO also check for other variables if needed
+            if (chr == 'x') { // TODO also check for other variables if needed
                 return new Token(Type.VARIABLE, piece, 0, 0, false);
             } else if (chr == 'e') {
                 return new Token(Type.CONSTANT, String.valueOf(Math.E), 0, 0, false);

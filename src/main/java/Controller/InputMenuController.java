@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -16,6 +17,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.matheclipse.core.expression.F;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,6 +32,10 @@ public class InputMenuController implements Initializable {
     Label fctLabel1;
     @FXML
     Label fctLabel2;
+    @FXML
+    CheckBox derivativeBox1;
+    @FXML
+    CheckBox derivativeBox2;
     @FXML
     VBox fctContainer1;
     @FXML
@@ -63,6 +69,9 @@ public class InputMenuController implements Initializable {
     private final String[] functions = {"sin(", "cos(", "tan(", "asin(", "acos(", "atan(", "ln(", "abs(", "sqrt("};
     private PrimaryController primaryController;
 
+    private Function firstFunction;
+    private Function secondFunction;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
@@ -91,6 +100,21 @@ public class InputMenuController implements Initializable {
                 }
             });
 
+            derivativeBox1.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    firstFunction.evaluateDerivative();
+                    Function derivative = firstFunction.getDerivative();
+                    System.out.println(derivative.getExprStr());
+                }
+            });
+
+            derivativeBox2.selectedProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    Function derivative = secondFunction.getDerivative();
+                    System.out.println(derivative.getExprStr());
+                }
+            });
+
             initializeKeyboard();
         });
     }
@@ -99,32 +123,35 @@ public class InputMenuController implements Initializable {
     private void onFctSubmit(Event event) {
 
         if (focusedInput == fctInput1) {
-            boolean fctTest = testGraph(fctInput1, fctLabel1);
+            firstFunction = new Function(fctInput1.getText(),true);
+            boolean fctTest = testGraph(firstFunction, fctLabel1);
 
             if (!fctTest) {
-                primaryController.setFirstFunctionExpression(null);
+                primaryController.setFirstFunction(new Function(null));
                 primaryController.redraw();
                 return;
             }
 
-            primaryController.setFirstFunctionExpression(fctInput1.getText());
+
+            primaryController.setFirstFunction(firstFunction);
         } else if (focusedInput == fctInput2) {
-            boolean fctTest = testGraph(fctInput2, fctLabel2);
+            secondFunction = new Function(fctInput2.getText(),true);
+            boolean fctTest = testGraph(secondFunction, fctLabel2);
 
             if (!fctTest) {
-                primaryController.setSecondFunctionExpression(null);
+                primaryController.setSecondFunction(new Function(null));
                 primaryController.redraw();
                 return;
             }
 
-            primaryController.setSecondFunctionExpression(fctInput2.getText());
+
+            primaryController.setSecondFunction(secondFunction);
         }
 
         primaryController.redraw();
     }
 
-    private boolean testGraph(TextField tf, Label msg) {
-        Function f = new Function(tf.getText());
+    private boolean testGraph(Function f, Label msg) {
         if (f.isValid()) {
             msg.setText("good function!");
             return true;
@@ -132,6 +159,12 @@ public class InputMenuController implements Initializable {
             msg.setText("Bad function");
             return false;
         }
+    }
+
+    @FXML
+    private void handleCheck() {
+        System.out.println("checked");
+
     }
 
     /**

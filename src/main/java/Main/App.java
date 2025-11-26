@@ -29,7 +29,7 @@ public class App extends Application {
 
             stage.setScene(scene);
         } catch (IOException err) {
-            System.out.println("Error loading main fxml file, " + err.getMessage());
+            System.out.println("Error loading main fxml file, " + err);
         }
 
         stage.show();

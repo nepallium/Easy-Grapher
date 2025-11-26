@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" style="-fx-background-color: lightpink;" stylesheets="@../styles/inputMenu.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.InputMenuController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" style="-fx-background-color: lightpink;" stylesheets="@../styles/inputMenu.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.InputMenuController">
    <children>
       <VBox fx:id="fctContainer1">
          <children>
@@ -18,7 +18,7 @@
                   <Label fx:id="fctLabel1" onMouseClicked="#onFctSubmit" text="Label" />
                </children>
             </HBox>
-            <CheckBox mnemonicParsing="false" text="Show derivative" />
+            <CheckBox fx:id="derivativeBox1" mnemonicParsing="false" onAction="#handleCheck" text="Show derivative" />
          </children>
       </VBox>
       <VBox fx:id="fctContainer2">
@@ -29,7 +29,7 @@
                   <Label fx:id="fctLabel2" onMouseClicked="#onFctSubmit" text="Label" />
                </children>
             </HBox>
-            <CheckBox mnemonicParsing="false" text="Show derivative" />
+            <CheckBox fx:id="derivativeBox2" mnemonicParsing="false" text="Show derivative" />
          </children>
       </VBox>
       <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
