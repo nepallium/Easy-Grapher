@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Function;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -84,24 +86,39 @@ public class InputMenuController implements Initializable {
     @FXML
     private void onFctSubmit(Event event) {
 
-
         if (focusedInput == fctInput1) {
-            displayGraph(fctInput1, fctLabel1);
+            boolean fctTest = testGraph(fctInput1, fctLabel1);
+
+            if (!fctTest) {
+                primaryController.setFirstFunctionExpression(null);
+                primaryController.redraw();
+                return;
+            }
 
             primaryController.setFirstFunctionExpression(fctInput1.getText());
         } else if (focusedInput == fctInput2) {
-            displayGraph(fctInput2, fctLabel2);
+            boolean fctTest = testGraph(fctInput2, fctLabel2);
+
+            if (!fctTest) {
+                primaryController.setSecondFunctionExpression(null);
+                primaryController.redraw();
+                return;
+            }
 
             primaryController.setSecondFunctionExpression(fctInput2.getText());
         }
+
+        primaryController.redraw();
     }
 
-    private void displayGraph(TextField tf, Label msg) {
+    private boolean testGraph(TextField tf, Label msg) {
         Function f = new Function(tf.getText());
         if (f.isValid()) {
             msg.setText("good function!");
+            return true;
         } else {
             msg.setText("Bad function");
+            return false;
         }
     }
 

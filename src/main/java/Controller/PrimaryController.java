@@ -132,7 +132,7 @@ public class PrimaryController implements Initializable{
 
     // REFRESH METHOD
 
-    private void redraw() {
+    public void redraw() {
         AxesGc.clearRect(0, 0, canvasWidth, canvasHeight);
         Function1Gc.clearRect(0, 0, canvasWidth, canvasHeight);
         Function2Gc.clearRect(0, 0, canvasWidth, canvasHeight);
