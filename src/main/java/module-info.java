@@ -3,6 +3,7 @@ module com.vanier.easygrapher {
     requires javafx.fxml;
     requires static lombok;
     requires commons.math3;
+    requires matheclipse.core;
 
     exports Model;
     opens Model to javafx.fxml;

@@ -9,7 +9,7 @@ public class Token {
     public int precedence;
     public int arity; // 1 = unary, 2 = binary
     public boolean isRightAssociative;
-    public static final Set<String> functions = Set.of("sin", "cos", "tan", "sqrt", "ln", "abs", "asin", "acos", "atan");
+    public static final Set<String> functions = Set.of("sin", "cos", "tan", "sqrt", "ln", "abs", "asin", "acos", "atan", "sec", "csc", "cot");
     public static final Set<String> operators = Set.of("+", "-", "*", "/", "^", "~");
 
     public Token(Type type, String value, int precedence, int arity, boolean isRightAssociative) {
@@ -135,6 +135,9 @@ public class Token {
             case "asin" -> Math.asin(n1);
             case "acos" -> Math.acos(n1);
             case "atan" -> Math.atan(n1);
+            case "sec" -> 1 / Math.cos(n1);
+            case "csc" -> 1 / Math.sin(n1);
+            case "cot" -> 1 / Math.tan(n1);
             case "ln" -> Math.log(n1);
             case "sqrt" -> Math.sqrt(n1);
             case "abs" -> Math.abs(n1);
