@@ -23,7 +23,7 @@ public class App extends Application {
         stage.setTitle("Easy Grapher");
 
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/View/InputMenu.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/View/mainView.fxml")));
 
             Scene scene = new Scene(root);
 

@@ -15,8 +15,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import lombok.Getter;
 
 public class PrimaryController implements Initializable{
+    private static PrimaryController primaryController;
+
+    public static PrimaryController getPrimaryController() {
+        return primaryController;
+    }
 
     private static final int canvasWidth = 600;
     private static final int canvasHeight = 600;
@@ -33,6 +39,9 @@ public class PrimaryController implements Initializable{
     private static double prevMouseX = 0;
     private static double prevMouseY = 0;
 
+    private String firstFunctionExpression;
+    private String secondFunctionExpression;
+
     @FXML
     public StackPane graphPane;
     @FXML
@@ -42,12 +51,23 @@ public class PrimaryController implements Initializable{
     @FXML
     public Canvas FunctionCanvas2;
 
+    private GraphicsContext AxesGc;
+    private GraphicsContext Function1Gc;
+    private GraphicsContext Function2Gc;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        drawFunction(FunctionCanvas1.getGraphicsContext2D());
-        drawAxes(AxesCanvas.getGraphicsContext2D());
-        drawAxeIncrements(AxesCanvas.getGraphicsContext2D());
-        drawLines(AxesCanvas.getGraphicsContext2D());
+        AxesGc = AxesCanvas.getGraphicsContext2D();
+        Function1Gc = FunctionCanvas1.getGraphicsContext2D();
+        Function2Gc = FunctionCanvas2.getGraphicsContext2D();
+
+        drawFunction(Function1Gc, firstFunctionExpression);
+        drawFunction(Function2Gc, secondFunctionExpression);
+        drawAxes(AxesGc);
+        drawAxeIncrements(AxesGc);
+        drawLines(AxesGc);
+
+        primaryController = this;
     }
 
     @FXML
@@ -67,7 +87,7 @@ public class PrimaryController implements Initializable{
         prevMouseX = drag.getX();
         prevMouseY = drag.getY();
 
-        redraw(AxesCanvas.getGraphicsContext2D(), FunctionCanvas1.getGraphicsContext2D());
+        redraw();
     }
 
     @FXML
@@ -88,7 +108,8 @@ public class PrimaryController implements Initializable{
             yScale = 1;
         }
 
-        redraw(AxesCanvas.getGraphicsContext2D(), FunctionCanvas1.getGraphicsContext2D());
+        System.out.println(firstFunctionExpression + ", " + secondFunctionExpression);
+        redraw();
     }
 
     // COMPUTE OFFSETS
@@ -111,14 +132,16 @@ public class PrimaryController implements Initializable{
 
     // REFRESH METHOD
 
-    private void redraw(GraphicsContext axesGc, GraphicsContext graphGc) {
-        axesGc.clearRect(0, 0, canvasWidth, canvasHeight);
-        graphGc.clearRect(0, 0, canvasWidth, canvasHeight);
+    private void redraw() {
+        AxesGc.clearRect(0, 0, canvasWidth, canvasHeight);
+        Function1Gc.clearRect(0, 0, canvasWidth, canvasHeight);
+        Function2Gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        drawAxes(axesGc);
-        drawAxeIncrements(axesGc);
-        drawLines(axesGc);
-        drawFunction(graphGc);
+        drawAxes(AxesGc);
+        drawAxeIncrements(AxesGc);
+        drawLines(AxesGc);
+        drawFunction(Function1Gc, firstFunctionExpression);
+        drawFunction(Function2Gc, secondFunctionExpression);
     }
 
     // DRAWING LOGIC
@@ -254,11 +277,11 @@ public class PrimaryController implements Initializable{
     }
 
 
-    public void drawFunction(GraphicsContext gc) {
+    public void drawFunction(GraphicsContext gc, String expr) {
         gc.setLineWidth(2);
         gc.setStroke(Color.BLUE);
 
-        Function f = new Function("x^3");
+        Function f = new Function(expr, true);
 
         for (int pixeled_x = 0; pixeled_x < canvasWidth - 1; pixeled_x++) {
 
@@ -273,5 +296,21 @@ public class PrimaryController implements Initializable{
 
             gc.strokeLine(pixeled_x, y1_coordinate, pixeled_x + 1, y2_coordinate);
         }
+    }
+
+    public String getFirstFunctionExpression() {
+        return firstFunctionExpression;
+    }
+
+    public void setFirstFunctionExpression(String firstFunctionExpression) {
+        this.firstFunctionExpression = firstFunctionExpression;
+    }
+
+    public String getSecondFunctionExpression() {
+        return secondFunctionExpression;
+    }
+
+    public void setSecondFunctionExpression(String secondFunctionExpression) {
+        this.secondFunctionExpression = secondFunctionExpression;
     }
 }

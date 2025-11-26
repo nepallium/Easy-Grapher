@@ -4,6 +4,7 @@ import Model.Function;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -14,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -57,10 +59,13 @@ public class InputMenuController implements Initializable {
             {"x", "y", "pi", "e"}
     };
     private final String[] functions = {"sin(", "cos(", "tan(", "asin(", "acos(", "atan(", "ln(", "abs(", "sqrt("};
+    private PrimaryController primaryController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
+            primaryController = PrimaryController.getPrimaryController();
+
             fctInput1.focusedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     focusedInput = fctInput1;
@@ -78,10 +83,16 @@ public class InputMenuController implements Initializable {
 
     @FXML
     private void onFctSubmit(Event event) {
+
+
         if (focusedInput == fctInput1) {
             displayGraph(fctInput1, fctLabel1);
+
+            primaryController.setFirstFunctionExpression(fctInput1.getText());
         } else if (focusedInput == fctInput2) {
             displayGraph(fctInput2, fctLabel2);
+
+            primaryController.setSecondFunctionExpression(fctInput2.getText());
         }
     }
 
