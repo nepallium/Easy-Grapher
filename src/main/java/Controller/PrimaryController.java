@@ -295,6 +295,10 @@ public class PrimaryController implements Initializable{
             double y1_coordinate = yToPixel(mathY1);
             double y2_coordinate = yToPixel(mathY2);
 
+            if (Math.abs(y2_coordinate - y1_coordinate) > canvasHeight) {
+                continue;
+            }
+
             gc.strokeLine(pixeled_x, y1_coordinate, pixeled_x + 1, y2_coordinate);
         }
     }
