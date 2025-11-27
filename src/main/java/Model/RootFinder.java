@@ -28,37 +28,47 @@ public class RootFinder {
         UnivariateFunction h = hFct::valueAt;
         BrentSolver solver = new BrentSolver(1e-10, 1e-14);
 
+        // because of rounding, we need to define a small tolerance for "effectively zero"
+        double tolerance = 1e-9;
+
         for (double a = min; a < max; a += step) {
-            double b = Math.min(a + step, max); // ensure we don’t exceed max
+            double b = Math.min(a + step, max);
 
             double ha = hFct.valueAt(a);
             double hb = hFct.valueAt(b);
 
             if (Double.isInfinite(ha) || Double.isInfinite(hb) || Double.isNaN(ha) || Double.isNaN(hb)) {
-                continue; // ignore this interval
+                continue;
             }
 
+            // 1) explicitly check if 'a' is a root (accounts for tangential roots, eg x^2 and 0)
+            if (Math.abs(ha) < tolerance) {
+                double rootClean = Math.round(a * Math.pow(10, decimals)) / Math.pow(10, decimals);
+                if (!roots.contains(rootClean)) {
+                    roots.add(rootClean);
+                }
+                // If 'a' is a root, we don't need to solve the interval [a, b]
+                // unless the function oscillates wildly, but for safety, we can continue.
+            }
+
+            // 2) standard bracketing checks
+            // only check for sign change to avoid duplicate work (from above) or solver errors
             try {
-                if (h.value(a) * h.value(b) <= 0) { // sign change detected
+                if (ha * hb < 0) { // Strictly less than 0 implies a crossing
                     double root = solver.solve(1000, h, a, b);
 
-                    // round root
                     double rootClean = Math.round(root * Math.pow(10, decimals)) / Math.pow(10, decimals);
 
+                    // check if root is valid
                     double hRoot = hFct.valueAt(rootClean);
-                    if (Double.isInfinite(hRoot) || Double.isNaN(hRoot) || Math.abs(hRoot) > 1e-6) {
-                        continue; // ignore fake root near discontinuity
-                    }
-
-                    // add if not already in list
-                    if (!roots.contains(rootClean)) {
-                        roots.add(rootClean);
+                    if (!Double.isInfinite(hRoot) && !Double.isNaN(hRoot) && Math.abs(hRoot) <= 1e-3) {
+                        if (!roots.contains(rootClean)) {
+                            roots.add(rootClean);
+                        }
                     }
                 }
             } catch (Exception e) {
-                // ignore small intervals without proper bracketing
-                // TODO display No roots found in the interval Label
-                System.out.println("No roots found in the visible interval");
+                // Ignore intervals that solver fails on
             }
         }
 

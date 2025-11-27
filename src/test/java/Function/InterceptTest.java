@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class IntersectionTest {
+public class InterceptTest {
 
     @Test
     public void testIntersection_1Root() {
@@ -65,6 +65,17 @@ public class IntersectionTest {
         List<Double> actual = RootFinder.findAllRoots(f, g, -10, 10, 0.5, 1);
 
         assertEquals("tangent / double root", expected, actual);
+    }
+
+    @Test
+    public void testIntersection_Tangent2() {
+        Function f = new Function("x^2", true);
+        Function g = new Function("x^3", true);
+
+        List<Double> expected = List.of(0.0, 1.0);
+        List<Double> actual = RootFinder.findAllRoots(f, g, -20, 20, 0.1, 1);
+
+        assertEquals(expected, actual);
     }
 
     @Test

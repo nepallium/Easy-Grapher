@@ -161,12 +161,6 @@ public class InputMenuController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleCheck() {
-        System.out.println("checked");
-
-    }
-
     /**
      * Initializes the on-screen keyboard
      */

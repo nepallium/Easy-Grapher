@@ -1,14 +1,19 @@
 package Controller;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import Model.Function;
+import Model.RootFinder;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -16,8 +21,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lombok.Getter;
+import lombok.Setter;
 
 public class PrimaryController implements Initializable{
+    @Getter
     private static PrimaryController primaryController;
 
     private static final int canvasWidth = 600;
@@ -38,7 +45,11 @@ public class PrimaryController implements Initializable{
 //    private String firstFunctionExpression;
 //    private String secondFunctionExpression;
 
+    @Setter
+    @Getter
     private Function firstFunction;
+    @Getter
+    @Setter
     private Function secondFunction;
 
     public class FunctionParams {
@@ -58,6 +69,11 @@ public class PrimaryController implements Initializable{
     private GraphicsContext AxesGc;
     private GraphicsContext Function1Gc;
     private GraphicsContext Function2Gc;
+
+    @FXML
+    private Button showInterceptsBtn;
+    @FXML
+    private Label showInterceptsLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -309,23 +325,22 @@ public class PrimaryController implements Initializable{
         }
     }
 
-    public Function getFirstFunction() {
-        return firstFunction;
-    }
+    @FXML
+    public void handleShowIntercepts(ActionEvent e) {
+        if (firstFunction == null || secondFunction == null ||
+                !firstFunction.isValid() || !secondFunction.isValid()) {
+            showInterceptsLabel.setText("Please input two valid functions first");
+            return;
+        }
 
-    public void setFirstFunction(Function firstFunction) {
-        this.firstFunction = firstFunction;
-    }
+        double min = -20, max = 20, step = 0.05;
+        int decimals = 2;
+        List<Double> roots = RootFinder.findAllRoots(firstFunction, secondFunction, min, max, step, decimals);
 
-    public Function getSecondFunction() {
-        return secondFunction;
-    }
-
-    public void setSecondFunction(Function secondFunction) {
-        this.secondFunction = secondFunction;
-    }
-
-    public static PrimaryController getPrimaryController() {
-        return primaryController;
+        if (roots.isEmpty()) {
+            showInterceptsLabel.setText("Could not find any roots within visible canvas!");
+        } else {
+            showInterceptsLabel.setText("Success! Roots at : " + roots);
+        }
     }
 }
