@@ -199,6 +199,16 @@ public class PrimaryController implements Initializable{
         return base;
     }
 
+    private int getExp(double scale) {
+        double targetPixels = 80;
+
+        double mathUnit = targetPixels / scale;
+
+        double exp = Math.floor(Math.log10(mathUnit));
+
+        return (int) exp;
+    }
+
     public void drawAxes(GraphicsContext gc) {
         gc.setLineWidth(2);
         gc.setStroke(Color.BLACK);
@@ -228,10 +238,18 @@ public class PrimaryController implements Initializable{
         double firstX = Math.ceil(min_x / xStep) * xStep;
         double axisYPixel = yToPixel(0);
 
+        int exp = getExp(xScale);
+
         for (double x = firstX; x <= max_x; x += xStep) {
             double converted_x = xToPixel(x);
+
+            if (Math.abs(converted_x - xToPixel(0)) < 1 ) {
+                continue;
+            }
+
             if (axisYPixel >= 0 && axisYPixel <= canvasHeight) {
-                gc.fillText(String.format("%.2f", x), converted_x + 3, axisYPixel - 3);
+                gc.fillText((exp > -3) ? String.format("%.2f", x): String.format("%1.0f * 10^%d", x / Math.pow(10, exp), exp)
+                        , converted_x + 3, axisYPixel - 3);
                 gc.strokeLine(converted_x, axisYPixel - 6, converted_x, axisYPixel + 6);
             }
         }
@@ -244,11 +262,19 @@ public class PrimaryController implements Initializable{
 
         for (double y = firstY; y <= max_y; y += yStep) {
             double converted_y = yToPixel(y);
+
+            if (Math.abs(converted_y - yToPixel(0)) < 1 ) {
+                continue;
+            }
+
             if (axisXPixel >= 0 && axisXPixel <= canvasWidth) {
-                gc.fillText(String.format("%.2f", y), axisXPixel + 4, converted_y - 4);
+                gc.fillText((exp > -3) ? String.format("%.2f", y): String.format("%.0f * 10^%d", y / Math.pow(10, exp), exp)
+                        , axisXPixel + 4, converted_y - 4);
                 gc.strokeLine(axisXPixel - 6, converted_y, axisXPixel + 6, converted_y);
             }
         }
+
+        gc.fillText("0.00", xToPixel(0) + 5, yToPixel(0) - 5);
     }
 
     public void drawLines(GraphicsContext gc) {
