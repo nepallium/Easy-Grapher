@@ -81,11 +81,15 @@ public class InputMenuController implements Initializable {
             PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
 
             fctInput1.textProperty().addListener((observable, oldValue, newValue) -> {
+                derivativeBox1.selectedProperty().setValue(false);
+                
                 pause.setOnFinished(this::onFctSubmit);
                 pause.playFromStart();
             });
 
             fctInput2.textProperty().addListener((observable, oldValue, newValue) -> {
+                derivativeBox2.selectedProperty().setValue(false);
+
                 pause.setOnFinished(this::onFctSubmit);
                 pause.playFromStart();
             });
@@ -111,14 +115,22 @@ public class InputMenuController implements Initializable {
                 if (newVal) {
                     firstFunction.evaluateDerivative();
                     Function derivative = firstFunction.getDerivative();
-                    System.out.println(derivative.getExprStr());
+                    if (derivative.isValid()) {
+                        primaryController.setFirstFDerivative(derivative);
+                        primaryController.redraw();
+                        System.out.println(derivative.getExprStr());
+                    }
                 }
             });
 
             derivativeBox2.selectedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     Function derivative = secondFunction.getDerivative();
-                    System.out.println(derivative.getExprStr());
+                    if (derivative.isValid()) {
+                        primaryController.setSecondFDerivative(derivative);
+                        primaryController.redraw();
+                        System.out.println(derivative.getExprStr());
+                    }
                 }
             });
 
@@ -145,17 +157,16 @@ public class InputMenuController implements Initializable {
 
     @FXML
     private void onFctSubmit(Event event) {
-
         if (focusedInput == fctInput1) {
             firstFunction = new Function(fctInput1.getText(),true);
             boolean fctTest = testGraph(firstFunction, fctLabel1);
 
             if (!fctTest) {
                 primaryController.setFirstFunction(new Function(null));
+                primaryController.setFirstFDerivative(new Function(null));
                 primaryController.redraw();
                 return;
             }
-
 
             primaryController.setFirstFunction(firstFunction);
         } else if (focusedInput == fctInput2) {
@@ -164,10 +175,10 @@ public class InputMenuController implements Initializable {
 
             if (!fctTest) {
                 primaryController.setSecondFunction(new Function(null));
+                primaryController.setSecondFDerivative(new Function(null));
                 primaryController.redraw();
                 return;
             }
-
 
             primaryController.setSecondFunction(secondFunction);
         }
