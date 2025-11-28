@@ -135,7 +135,7 @@ public class InputMenuController implements Initializable {
 
     @FXML
     private void Function2ColorChanged(Event event) {
-        primaryController.setFunction2Color(Function1Color.getValue());
+        primaryController.setFunction2Color(Function2Color.getValue());
         primaryController.redraw();
     }
 
