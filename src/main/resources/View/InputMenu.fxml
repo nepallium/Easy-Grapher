@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
@@ -10,7 +11,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" style="-fx-background-color: lightpink;" stylesheets="@../styles/inputMenu.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.InputMenuController">
    <children>
-      <VBox fx:id="fctContainer1">
+      <VBox fx:id="fctContainer1" prefHeight="147.0" prefWidth="280.0">
          <children>
             <HBox>
                <children>
@@ -19,9 +20,10 @@
                </children>
             </HBox>
             <CheckBox fx:id="derivativeBox1" mnemonicParsing="false" text="Show derivative" />
+            <ColorPicker fx:id="Function1Color" onAction="#Function1ColorChanged" />
          </children>
       </VBox>
-      <VBox fx:id="fctContainer2">
+      <VBox fx:id="fctContainer2" prefHeight="126.0" prefWidth="280.0">
          <children>
             <HBox>
                <children>
@@ -30,6 +32,7 @@
                </children>
             </HBox>
             <CheckBox fx:id="derivativeBox2" mnemonicParsing="false" text="Show derivative" />
+            <ColorPicker fx:id="Function2Color" onAction="#Function2ColorChanged" />
          </children>
       </VBox>
       <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
