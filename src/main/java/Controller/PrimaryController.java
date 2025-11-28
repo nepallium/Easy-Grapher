@@ -42,9 +42,6 @@ public class PrimaryController implements Initializable{
     private static double prevMouseX = 0;
     private static double prevMouseY = 0;
 
-//    private String firstFunctionExpression;
-//    private String secondFunctionExpression;
-
     @Setter
     @Getter
     private Function firstFunction;
@@ -52,10 +49,12 @@ public class PrimaryController implements Initializable{
     @Setter
     private Function secondFunction;
 
-    public class FunctionParams {
-        private String firstFunctionExpression;
-        private Color color;
-    }
+    @Getter
+    @Setter
+    private Color Function1Color;
+    @Getter
+    @Setter
+    private Color Function2Color;
 
     @FXML
     public StackPane graphPane;
@@ -81,11 +80,14 @@ public class PrimaryController implements Initializable{
         Function1Gc = FunctionCanvas1.getGraphicsContext2D();
         Function2Gc = FunctionCanvas2.getGraphicsContext2D();
 
+        Function1Color = Color.valueOf("000000");
+        Function2Color = Color.valueOf("000000");;
+
         firstFunction = new Function(null);
         secondFunction = new Function(null);
 
-        drawFunction(Function1Gc, firstFunction);
-        drawFunction(Function2Gc, secondFunction);
+        drawFunction(Function1Gc, firstFunction, Function1Color);
+        drawFunction(Function2Gc, secondFunction, Function2Color);
         drawAxes(AxesGc);
         drawAxeIncrements(AxesGc);
         drawLines(AxesGc);
@@ -163,8 +165,8 @@ public class PrimaryController implements Initializable{
         drawAxes(AxesGc);
         drawAxeIncrements(AxesGc);
         drawLines(AxesGc);
-        drawFunction(Function1Gc, firstFunction);
-        drawFunction(Function2Gc, secondFunction);
+        drawFunction(Function1Gc, firstFunction, Function1Color);
+        drawFunction(Function2Gc, secondFunction, Function2Color);
     }
 
     // DRAWING LOGIC
@@ -326,9 +328,9 @@ public class PrimaryController implements Initializable{
     }
 
 
-    public void drawFunction(GraphicsContext gc, Function f) {
-        gc.setLineWidth(2);
-        gc.setStroke(Color.BLUE);
+    public void drawFunction(GraphicsContext gc, Function f, Color color) {
+        gc.setLineWidth(3);
+        gc.setStroke(color);
 
 //        Function f = new Function(expr, true);
 

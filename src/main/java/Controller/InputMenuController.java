@@ -8,13 +8,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.matheclipse.core.eval.ExprEvaluator;
@@ -43,6 +41,10 @@ public class InputMenuController implements Initializable {
     VBox fctContainer2;
     @FXML
     VBox keyboard;
+    @FXML
+    ColorPicker Function1Color;
+    @FXML
+    ColorPicker Function2Color;
 
     private TextField focusedInput;
     private final String[][] keyCharss = {
@@ -116,10 +118,25 @@ public class InputMenuController implements Initializable {
                 }
             });
 
+            Function1Color.setValue(Color.BLACK);
+            Function2Color.setValue(Color.BLACK);
+
             initializeKeyboard();
         });
 
         Function.derivEvaluator = new ExprEvaluator();
+    }
+
+    @FXML
+    private void Function1ColorChanged(Event event) {
+        primaryController.setFunction1Color(Function1Color.getValue());
+        primaryController.redraw();
+    }
+
+    @FXML
+    private void Function2ColorChanged(Event event) {
+        primaryController.setFunction2Color(Function1Color.getValue());
+        primaryController.redraw();
     }
 
     @FXML
