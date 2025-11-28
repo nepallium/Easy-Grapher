@@ -93,11 +93,15 @@ public class InputMenuController implements Initializable {
             fctInput1.focusedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     focusedInput = fctInput1;
+                } else if (oldVal) {
+                    onFctSubmit(new Event(null));
                 }
             });
             fctInput2.focusedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     focusedInput = fctInput2;
+                } else if (oldVal) {
+                    onFctSubmit(new Event(null));
                 }
             });
 
@@ -158,7 +162,11 @@ public class InputMenuController implements Initializable {
         if (f.isValid()) {
             msg.setText("good function!");
             return true;
-        } else {
+        }
+        else if (f.getExprStr().isBlank()) {
+            return false;
+        }
+        else {
             msg.setText("Bad function");
             return false;
         }
