@@ -2,3 +2,10 @@
     -fx-font-family: 'courier new';
     -fx-font-size: 14px;
 }
+
+.fctInput {
+    -fx-font-size: 16px;
+    -fx-pref-height: 45px;
+    -fx-padding: 0px 10px 0px 10px;
+}
+

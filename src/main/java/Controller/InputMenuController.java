@@ -9,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -74,6 +76,13 @@ public class InputMenuController implements Initializable {
 
     private Function firstFunction;
     private Function secondFunction;
+
+    Image warningImg = new Image("file:src/assets/images/warning.png");
+    Image checkImg = new Image("file:src/assets/images/check.png");
+    @FXML
+    ImageView validityImg1;
+    @FXML
+    ImageView validityImg2;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -148,7 +157,7 @@ public class InputMenuController implements Initializable {
 
         if (focusedInput == fctInput1) {
             firstFunction = new Function(fctInput1.getText(),true);
-            boolean fctTest = testGraph(firstFunction, fctLabel1);
+            boolean fctTest = testGraph(firstFunction, validityImg1);
 
             if (!fctTest) {
                 primaryController.setFirstFunction(new Function(null));
@@ -160,7 +169,7 @@ public class InputMenuController implements Initializable {
             primaryController.setFirstFunction(firstFunction);
         } else if (focusedInput == fctInput2) {
             secondFunction = new Function(fctInput2.getText(),true);
-            boolean fctTest = testGraph(secondFunction, fctLabel2);
+            boolean fctTest = testGraph(secondFunction, validityImg2);
 
             if (!fctTest) {
                 primaryController.setSecondFunction(new Function(null));
@@ -168,23 +177,23 @@ public class InputMenuController implements Initializable {
                 return;
             }
 
-
             primaryController.setSecondFunction(secondFunction);
         }
 
         primaryController.redraw();
     }
 
-    private boolean testGraph(Function f, Label msg) {
+    private boolean testGraph(Function f, ImageView view) {
         if (f.isValid()) {
-            msg.setText("good function!");
+            view.setImage(checkImg);
             return true;
         }
         else if (f.getExprStr().isBlank()) {
+            view.setImage(null);
             return false;
         }
         else {
-            msg.setText("Bad function");
+            view.setImage(warningImg);
             return false;
         }
     }
