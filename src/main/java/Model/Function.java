@@ -18,6 +18,8 @@ public class Function {
     private boolean isValid;
 
     private static final PostfixEvaluator evaluator = new PostfixEvaluator();
+    public static ExprEvaluator derivEvaluator;
+
 
     public Function(String exprStr) {
         this.exprStr = exprStr;
@@ -84,7 +86,6 @@ public class Function {
 
     public void evaluateDerivative() {
         if (this.isValid) {
-            ExprEvaluator derivEvaluator = new ExprEvaluator();
 
             derivativeStr = derivEvaluator.eval(String.format("D(%s, x)", exprStr)).toString().toLowerCase();
             derivativeStr = derivativeStr.replace("log", "ln");

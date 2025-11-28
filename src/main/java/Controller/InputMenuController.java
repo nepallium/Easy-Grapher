@@ -17,6 +17,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.matheclipse.core.eval.ExprEvaluator;
 import org.matheclipse.core.expression.F;
 
 import java.io.IOException;
@@ -115,6 +116,7 @@ public class InputMenuController implements Initializable {
                 }
             });
 
+            Function.derivEvaluator = new ExprEvaluator();
             initializeKeyboard();
         });
     }
