@@ -116,9 +116,10 @@ public class InputMenuController implements Initializable {
                 }
             });
 
-            Function.derivEvaluator = new ExprEvaluator();
             initializeKeyboard();
         });
+
+        Function.derivEvaluator = new ExprEvaluator();
     }
 
     @FXML

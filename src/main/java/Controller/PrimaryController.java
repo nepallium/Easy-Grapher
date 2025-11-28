@@ -170,7 +170,7 @@ public class PrimaryController implements Initializable{
     // DRAWING LOGIC
 
     private double computeTickStep(double scale) {
-        double targetPixels = 80;
+        double targetPixels = 140;
 
         double mathUnit = targetPixels / scale;
 
