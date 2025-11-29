@@ -74,12 +74,15 @@ public class PrimaryController implements Initializable{
     public Canvas Derivative1Canvas;
     @FXML
     public Canvas Derivative2Canvas;
+    @FXML
+    public Canvas RootCanvas;
 
     private GraphicsContext AxesGc;
     private GraphicsContext Function1Gc;
     private GraphicsContext Function2Gc;
     private GraphicsContext Derivative1Gc;
     private GraphicsContext Derivative2Gc;
+    private GraphicsContext RootGc;
 
     @FXML
     private Button showInterceptsBtn;
@@ -93,6 +96,7 @@ public class PrimaryController implements Initializable{
         Function2Gc = FunctionCanvas2.getGraphicsContext2D();
         Derivative1Gc = Derivative1Canvas.getGraphicsContext2D();
         Derivative2Gc = Derivative2Canvas.getGraphicsContext2D();
+        RootGc = RootCanvas.getGraphicsContext2D();
 
         Function1Color = Color.valueOf("000000");
         Function2Color = Color.valueOf("000000");;
@@ -109,6 +113,8 @@ public class PrimaryController implements Initializable{
         drawLines(AxesGc);
         drawFunction(Derivative1Gc, firstFDerivative, Color.BLACK, 0.5);
         drawFunction(Derivative2Gc, secondFDerivative, Color.BLACK, 0.5);
+
+        RootCanvas.toFront();
 
         primaryController = this;
     }
@@ -181,6 +187,7 @@ public class PrimaryController implements Initializable{
         Function2Gc.clearRect(0, 0, canvasWidth, canvasHeight);
         Derivative1Gc.clearRect(0, 0, canvasWidth, canvasHeight);
         Derivative2Gc.clearRect(0, 0, canvasWidth, canvasHeight);
+        RootGc.clearRect(0, 0, canvasWidth, canvasHeight);
 
         drawAxes(AxesGc);
         drawAxeIncrements(AxesGc);
@@ -211,7 +218,7 @@ public class PrimaryController implements Initializable{
     }
 
     private double getBase(double scale) {
-        double targetPixels = 80;
+        double targetPixels = 140;
 
         double mathUnit = targetPixels / scale;
         double exp = Math.pow(10, Math.floor(Math.log10(mathUnit)));
@@ -224,7 +231,7 @@ public class PrimaryController implements Initializable{
     }
 
     private int getExp(double scale) {
-        double targetPixels = 80;
+        double targetPixels = 140;
 
         double mathUnit = targetPixels / scale;
 
@@ -387,6 +394,14 @@ public class PrimaryController implements Initializable{
         double min = -20, max = 20, step = 0.05;
         int decimals = 2;
         List<Double> roots = RootFinder.findAllRoots(firstFunction, secondFunction, min, max, step, decimals);
+
+        RootGc.setStroke(Color.BLACK);
+        RootGc.setFill(Color.WHITE);
+
+        for (Double root : roots) {
+            RootGc.fillOval(xToPixel(root) - 7, yToPixel(firstFunction.valueAt(root)) - 7, 14, 14);
+            RootGc.strokeOval(xToPixel(root) - 7, yToPixel(firstFunction.valueAt(root)) - 7, 14, 14);
+        }
 
         if (roots.isEmpty()) {
             showInterceptsLabel.setText("Could not find any roots within visible canvas!");
