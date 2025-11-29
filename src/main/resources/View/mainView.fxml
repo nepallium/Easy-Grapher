@@ -13,6 +13,8 @@
         <Canvas fx:id="AxesCanvas" height="600.0" width="600.0" />
         <Canvas fx:id="FunctionCanvas1" height="600.0" layoutX="10.0" layoutY="10.0" width="600.0" />
         <Canvas fx:id="FunctionCanvas2" height="600.0" layoutX="10.0" layoutY="10.0" width="600.0" />
+      <Canvas fx:id="Derivative1Canvas" height="600.0" layoutX="10.0" layoutY="10.0" width="600.0" />
+      <Canvas fx:id="Derivative2Canvas" height="600.0" layoutX="10.0" layoutY="10.0" width="600.0" />
     </StackPane>
     <HBox layoutX="300.0" prefHeight="100.0" prefWidth="600.0" style="-fx-background-color: lightblue;">
       <children>

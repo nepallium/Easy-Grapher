@@ -48,6 +48,12 @@ public class PrimaryController implements Initializable{
     @Getter
     @Setter
     private Function secondFunction;
+    @Getter
+    @Setter
+    private Function firstFDerivative;
+    @Getter
+    @Setter
+    private Function secondFDerivative;
 
     @Getter
     @Setter
@@ -64,10 +70,16 @@ public class PrimaryController implements Initializable{
     public Canvas FunctionCanvas1;
     @FXML
     public Canvas FunctionCanvas2;
+    @FXML
+    public Canvas Derivative1Canvas;
+    @FXML
+    public Canvas Derivative2Canvas;
 
     private GraphicsContext AxesGc;
     private GraphicsContext Function1Gc;
     private GraphicsContext Function2Gc;
+    private GraphicsContext Derivative1Gc;
+    private GraphicsContext Derivative2Gc;
 
     @FXML
     private Button showInterceptsBtn;
@@ -79,18 +91,24 @@ public class PrimaryController implements Initializable{
         AxesGc = AxesCanvas.getGraphicsContext2D();
         Function1Gc = FunctionCanvas1.getGraphicsContext2D();
         Function2Gc = FunctionCanvas2.getGraphicsContext2D();
+        Derivative1Gc = Derivative1Canvas.getGraphicsContext2D();
+        Derivative2Gc = Derivative2Canvas.getGraphicsContext2D();
 
         Function1Color = Color.valueOf("000000");
         Function2Color = Color.valueOf("000000");;
 
         firstFunction = new Function(null);
         secondFunction = new Function(null);
+        firstFDerivative = new Function(null);
+        secondFDerivative = new Function(null);
 
-        drawFunction(Function1Gc, firstFunction, Function1Color);
-        drawFunction(Function2Gc, secondFunction, Function2Color);
+        drawFunction(Function1Gc, firstFunction, Function1Color, 1);
+        drawFunction(Function2Gc, secondFunction, Function2Color, 1);
         drawAxes(AxesGc);
         drawAxeIncrements(AxesGc);
         drawLines(AxesGc);
+        drawFunction(Derivative1Gc, firstFDerivative, Color.BLACK, 0.5);
+        drawFunction(Derivative2Gc, secondFDerivative, Color.BLACK, 0.5);
 
         primaryController = this;
     }
@@ -125,13 +143,13 @@ public class PrimaryController implements Initializable{
             yScale /= 0.9;
         }
 
-        if (xScale <= 1) {
-            xScale = 1;
-        }
-
-        if (yScale <= 1) {
-            yScale = 1;
-        }
+//        if (xScale <= 1) {
+//            xScale = 1;
+//        }
+//
+//        if (yScale <= 1) {
+//            yScale = 1;
+//        }
 
         System.out.println(firstFunction.getExprStr() + ", " + secondFunction.getExprStr());
         redraw();
@@ -161,12 +179,16 @@ public class PrimaryController implements Initializable{
         AxesGc.clearRect(0, 0, canvasWidth, canvasHeight);
         Function1Gc.clearRect(0, 0, canvasWidth, canvasHeight);
         Function2Gc.clearRect(0, 0, canvasWidth, canvasHeight);
+        Derivative1Gc.clearRect(0, 0, canvasWidth, canvasHeight);
+        Derivative2Gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
         drawAxes(AxesGc);
         drawAxeIncrements(AxesGc);
         drawLines(AxesGc);
-        drawFunction(Function1Gc, firstFunction, Function1Color);
-        drawFunction(Function2Gc, secondFunction, Function2Color);
+        drawFunction(Function1Gc, firstFunction, Function1Color, 1);
+        drawFunction(Function2Gc, secondFunction, Function2Color, 1);
+        drawFunction(Derivative1Gc, firstFDerivative, Function1Color, 0.5);
+        drawFunction(Derivative2Gc, secondFDerivative, Function2Color, 0.5);
     }
 
     // DRAWING LOGIC
@@ -328,11 +350,10 @@ public class PrimaryController implements Initializable{
     }
 
 
-    public void drawFunction(GraphicsContext gc, Function f, Color color) {
+    public void drawFunction(GraphicsContext gc, Function f, Color color, double opacity) {
         gc.setLineWidth(3);
         gc.setStroke(color);
-
-//        Function f = new Function(expr, true);
+        gc.setGlobalAlpha(opacity);
 
         for (int pixeled_x = 0; pixeled_x < canvasWidth - 1; pixeled_x++) {
 
@@ -351,6 +372,8 @@ public class PrimaryController implements Initializable{
 
             gc.strokeLine(pixeled_x, y1_coordinate, pixeled_x + 1, y2_coordinate);
         }
+
+        gc.setGlobalAlpha(1.0);
     }
 
     @FXML
