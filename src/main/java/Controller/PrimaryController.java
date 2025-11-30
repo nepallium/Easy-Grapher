@@ -6,20 +6,24 @@ import java.util.ResourceBundle;
 
 import Model.Function;
 import Model.RootFinder;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -76,6 +80,8 @@ public class PrimaryController implements Initializable{
     public Canvas Derivative2Canvas;
     @FXML
     public Canvas RootCanvas;
+    @FXML
+    public AnchorPane root;
 
     private GraphicsContext AxesGc;
     private GraphicsContext Function1Gc;
@@ -117,6 +123,11 @@ public class PrimaryController implements Initializable{
         RootCanvas.toFront();
 
         primaryController = this;
+
+        Platform.runLater(() -> {
+            Stage stage = (Stage) root.getScene().getWindow();
+            stage.setResizable(false);
+        });
     }
 
     @FXML

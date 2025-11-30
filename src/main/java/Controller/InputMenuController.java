@@ -167,7 +167,7 @@ public class InputMenuController implements Initializable {
     @FXML
     private void onFctSubmit(Event event) {
         if (focusedInput == fctInput1) {
-            firstFunction = new Function(fctInput1.getText(),true);
+            firstFunction = new Function(fctInput1.getText());
             boolean fctTest = testGraph(firstFunction, validityImg1);
 
             if (!fctTest) {
@@ -179,7 +179,7 @@ public class InputMenuController implements Initializable {
 
             primaryController.setFirstFunction(firstFunction);
         } else if (focusedInput == fctInput2) {
-            secondFunction = new Function(fctInput2.getText(),true);
+            secondFunction = new Function(fctInput2.getText());
             boolean fctTest = testGraph(secondFunction, validityImg2);
 
             if (!fctTest) {
