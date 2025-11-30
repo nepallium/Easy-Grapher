@@ -4,6 +4,7 @@ module com.vanier.easygrapher {
     requires static lombok;
     requires commons.math3;
     requires matheclipse.core;
+    requires jas;
 
     exports Model;
     opens Model to javafx.fxml;

@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import Model.Function;
 import Model.RootFinder;
+import edu.jas.arith.Roots;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -49,10 +50,10 @@ public class PrimaryController implements Initializable{
     private static Double coordinate_x;
     private static Double coordinate_y;
 
-    @Setter
+    private boolean interceptToggle;
+
     @Getter
     private Function firstFunction;
-    @Getter
     @Setter
     private Function secondFunction;
     @Getter
@@ -226,8 +227,10 @@ public class PrimaryController implements Initializable{
         drawLines(AxesGc);
         drawFunction(Function1Gc, firstFunction, Function1Color, 1);
         drawFunction(Function2Gc, secondFunction, Function2Color, 1);
-        drawFunction(Derivative1Gc, firstFDerivative, Function1Color, 0.5);
-        drawFunction(Derivative2Gc, secondFDerivative, Function2Color, 0.5);
+        drawFunction(Derivative1Gc, firstFDerivative, Function1Color, 0.3);
+        drawFunction(Derivative2Gc, secondFDerivative, Function2Color, 0.3);
+
+        if (interceptToggle) drawIntercepts(RootGc);
         drawCoordinate(RootGc);
     }
 
@@ -446,8 +449,7 @@ public class PrimaryController implements Initializable{
         gc.setGlobalAlpha(1.0);
     }
 
-    @FXML
-    public void handleShowIntercepts(ActionEvent e) {
+    private void drawIntercepts(GraphicsContext gc) {
         if (firstFunction == null || secondFunction == null ||
                 !firstFunction.isValid() || !secondFunction.isValid()) {
             showInterceptsLabel.setText("Please input two valid functions first");
@@ -471,5 +473,22 @@ public class PrimaryController implements Initializable{
         } else {
             showInterceptsLabel.setText("Success! Roots at : " + roots);
         }
+    }
+
+    @FXML
+    public void handleShowIntercepts(ActionEvent e) {
+        interceptToggle = true;
+
+        drawIntercepts(RootGc);
+    }
+
+    public void setFirstFunction(Function firstFunction) {
+        this.firstFunction = firstFunction;
+        interceptToggle = false;
+    }
+
+    public void setSecondFunction(Function secondFunction) {
+        this.secondFunction = secondFunction;
+        interceptToggle = false;
     }
 }

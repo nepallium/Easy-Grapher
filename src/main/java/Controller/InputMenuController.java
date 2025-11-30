@@ -129,6 +129,9 @@ public class InputMenuController implements Initializable {
                         primaryController.redraw();
                         System.out.println(derivative.getExprStr());
                     }
+                } else {
+                    primaryController.setFirstFDerivative(new Function(null));
+                    primaryController.redraw();
                 }
             });
 
@@ -140,6 +143,9 @@ public class InputMenuController implements Initializable {
                         primaryController.redraw();
                         System.out.println(derivative.getExprStr());
                     }
+                } else {
+                    primaryController.setSecondFDerivative(new Function(null));
+                    primaryController.redraw();
                 }
             });
 
