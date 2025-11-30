@@ -3,39 +3,41 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ColorPicker?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" style="-fx-background-color: lightpink;" stylesheets="@../styles/inputMenu.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.InputMenuController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" spacing="20.0" style="-fx-border-width: 0 1 0 0; -fx-border-color: black;" stylesheets="@../styles/inputMenu.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.InputMenuController">
    <children>
-      <VBox fx:id="fctContainer1" prefHeight="147.0" prefWidth="280.0">
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" VBox.vgrow="ALWAYS">
          <children>
-            <HBox>
+            <VBox fx:id="fctContainer1" prefHeight="138.0" prefWidth="280.0" spacing="10.0">
                <children>
-                  <TextField fx:id="fctInput1" onAction="#onFctSubmit" HBox.hgrow="ALWAYS" />
-                  <Label fx:id="fctLabel1" onMouseClicked="#onFctSubmit" text="Label" />
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <TextField fx:id="fctInput1" onAction="#onFctSubmit" styleClass="fctInput" HBox.hgrow="ALWAYS" />
+                        <ImageView fx:id="validityImg1" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </HBox>
+                  <CheckBox fx:id="derivativeBox1" mnemonicParsing="false" text="Show derivative" />
+                  <ColorPicker fx:id="Function1Color" onAction="#Function1ColorChanged" />
                </children>
-            </HBox>
-            <CheckBox fx:id="derivativeBox1" mnemonicParsing="false" text="Show derivative" />
-            <ColorPicker fx:id="Function1Color" onAction="#Function1ColorChanged" />
+            </VBox>
+            <VBox fx:id="fctContainer2" prefWidth="280.0" spacing="10.0">
+               <children>
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <TextField fx:id="fctInput2" onAction="#onFctSubmit" styleClass="fctInput" HBox.hgrow="ALWAYS" />
+                        <ImageView fx:id="validityImg2" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </HBox>
+                  <CheckBox fx:id="derivativeBox2" mnemonicParsing="false" text="Show derivative" />
+                  <ColorPicker fx:id="Function2Color" onAction="#Function2ColorChanged" prefHeight="33.0" prefWidth="125.0" />
+               </children>
+            </VBox>
          </children>
       </VBox>
-      <VBox fx:id="fctContainer2" prefHeight="126.0" prefWidth="280.0">
-         <children>
-            <HBox>
-               <children>
-                  <TextField fx:id="fctInput2" onAction="#onFctSubmit" HBox.hgrow="ALWAYS" />
-                  <Label fx:id="fctLabel2" onMouseClicked="#onFctSubmit" text="Label" />
-               </children>
-            </HBox>
-            <CheckBox fx:id="derivativeBox2" mnemonicParsing="false" text="Show derivative" />
-            <ColorPicker fx:id="Function2Color" onAction="#Function2ColorChanged" />
-         </children>
-      </VBox>
-      <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
       <VBox fx:id="keyboard" alignment="BOTTOM_CENTER" prefHeight="400.0" styleClass="keyboard" />
    </children>
    <padding>
