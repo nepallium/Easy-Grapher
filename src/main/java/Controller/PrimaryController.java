@@ -42,6 +42,9 @@ public class PrimaryController implements Initializable{
     private static double prevMouseX = 0;
     private static double prevMouseY = 0;
 
+    private static Double coordinate_x;
+    private static Double coordinate_y;
+
     @Setter
     @Getter
     private Function firstFunction;
@@ -84,6 +87,8 @@ public class PrimaryController implements Initializable{
     private GraphicsContext Derivative2Gc;
     private GraphicsContext RootGc;
 
+    private Function hoveredFunction;
+
     @FXML
     private Button showInterceptsBtn;
     @FXML
@@ -123,18 +128,42 @@ public class PrimaryController implements Initializable{
     private void handleMousePress(MouseEvent press) {
         prevMouseX = press.getX();
         prevMouseY = press.getY();
+
+        boolean inRange = isNearFunction(firstFunction);
+
+        if (inRange) {
+            hoveredFunction = firstFunction;
+            return;
+        }
+
+        inRange = isNearFunction(secondFunction);
+
+        if (inRange) {
+            hoveredFunction = secondFunction;
+        }
+    }
+
+    @FXML
+    private void handleMouseRelease(MouseEvent release) {
+        hoveredFunction = null;
+        redraw();
     }
 
     @FXML
     private void handleMouseDrag(MouseEvent drag) {
-        double delta_x = drag.getX() - prevMouseX;
-        double delta_y = drag.getY() - prevMouseY;
+        if (hoveredFunction == null) {
+            double delta_x = drag.getX() - prevMouseX;
+            double delta_y = drag.getY() - prevMouseY;
 
-        xOffset -= delta_x / xScale;
-        yOffset += delta_y / yScale;
+            xOffset -= delta_x / xScale;
+            yOffset += delta_y / yScale;
 
-        prevMouseX = drag.getX();
-        prevMouseY = drag.getY();
+            prevMouseX = drag.getX();
+            prevMouseY = drag.getY();
+        } else {
+            coordinate_x = xFromPixel(drag.getX());
+            coordinate_y = hoveredFunction.valueAt(coordinate_x);
+        }
 
         redraw();
     }
@@ -149,15 +178,7 @@ public class PrimaryController implements Initializable{
             yScale /= 0.9;
         }
 
-//        if (xScale <= 1) {
-//            xScale = 1;
-//        }
-//
-//        if (yScale <= 1) {
-//            yScale = 1;
-//        }
-
-        System.out.println(firstFunction.getExprStr() + ", " + secondFunction.getExprStr());
+//        System.out.println(firstFunction.getExprStr() + ", " + secondFunction.getExprStr());
         redraw();
     }
 
@@ -196,9 +217,23 @@ public class PrimaryController implements Initializable{
         drawFunction(Function2Gc, secondFunction, Function2Color, 1);
         drawFunction(Derivative1Gc, firstFDerivative, Function1Color, 0.5);
         drawFunction(Derivative2Gc, secondFDerivative, Function2Color, 0.5);
+        drawCoordinate(RootGc);
     }
 
     // DRAWING LOGIC
+
+    private boolean isNearFunction(Function function) {
+        double pixelRange = 8;
+
+        double x = xFromPixel(prevMouseX);
+        double y = function.valueAt(x);
+
+        double pixeled_y = yToPixel(y);
+
+        double distance = Math.abs(pixeled_y - prevMouseY);
+
+        return distance < pixelRange;
+    }
 
     private double computeTickStep(double scale) {
         double targetPixels = 140;
@@ -254,6 +289,23 @@ public class PrimaryController implements Initializable{
         if (yAxisWithOffset >= 0 && yAxisWithOffset <= canvasHeight) {
             gc.strokeLine(0, yAxisWithOffset, canvasWidth, yAxisWithOffset);
         }
+    }
+
+    public void drawCoordinate(GraphicsContext gc) {
+        if (hoveredFunction == null) return;
+
+        double pixeled_x = xToPixel(coordinate_x);
+        double pixeled_y = yToPixel(coordinate_y);
+
+        gc.setFill(Color.RED);
+        gc.fillOval(pixeled_x - 4, pixeled_y - 4, 8, 8);
+
+        gc.setFill(Color.BLACK);
+        gc.setFont(Font.font(14));
+        gc.fillText(
+                String.format("(%.3f, %.3f)", coordinate_x, coordinate_y),
+                pixeled_x + 10, pixeled_y - 10
+        );
     }
 
     public void drawAxeIncrements(GraphicsContext gc) {
