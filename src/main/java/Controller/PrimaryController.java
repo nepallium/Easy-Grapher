@@ -86,6 +86,10 @@ public class PrimaryController implements Initializable{
     public Canvas RootCanvas;
     @FXML
     public AnchorPane root;
+    @FXML
+    private Button showInterceptsBtn;
+    @FXML
+    private Label showInterceptsLabel;
 
     private GraphicsContext AxesGc;
     private GraphicsContext Function1Gc;
@@ -95,11 +99,6 @@ public class PrimaryController implements Initializable{
     private GraphicsContext RootGc;
 
     private Function hoveredFunction;
-
-    @FXML
-    private Button showInterceptsBtn;
-    @FXML
-    private Label showInterceptsLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -208,6 +207,17 @@ public class PrimaryController implements Initializable{
 
 //        System.out.println(firstFunction.getExprStr() + ", " + secondFunction.getExprStr());
         redraw();
+    }
+
+    /**
+     * Event triggered when user toggles show intercepts: toggles intercepts until one of the functions change
+     * @param e the corresponding button event
+     */
+    @FXML
+    public void handleShowIntercepts(ActionEvent e) {
+        interceptToggle = true;
+
+        drawIntercepts(RootGc);
     }
 
     // COMPUTE OFFSETS
@@ -568,17 +578,6 @@ public class PrimaryController implements Initializable{
         } else {
             showInterceptsLabel.setText("Success! Roots at : " + roots);
         }
-    }
-
-    /**
-     * Event triggered when user toggles show intercepts: toggles intercepts until one of the functions change
-     * @param e the corresponding button event
-     */
-    @FXML
-    public void handleShowIntercepts(ActionEvent e) {
-        interceptToggle = true;
-
-        drawIntercepts(RootGc);
     }
 
     public void setFirstFunction(Function firstFunction) {
