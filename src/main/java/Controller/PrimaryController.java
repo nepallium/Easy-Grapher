@@ -561,9 +561,11 @@ public class PrimaryController implements Initializable{
             return;
         }
 
-        double min = -20, max = 20, step = 0.05;
+        double min_x = xFromPixel(0);
+        double max_x = xFromPixel(canvasWidth);
+        double step = 0.1;
         int decimals = 2;
-        List<Double> roots = RootFinder.findAllRoots(firstFunction, secondFunction, min, max, step, decimals);
+        List<Double> roots = RootFinder.findAllRoots(firstFunction, secondFunction, min_x, max_x, step, decimals);
 
         RootGc.setStroke(Color.BLACK);
         RootGc.setFill(Color.WHITE);
