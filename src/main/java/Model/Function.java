@@ -6,6 +6,8 @@ import org.matheclipse.core.eval.ExprEvaluator;
 import java.util.EmptyStackException;
 
 /**
+ * A function
+ *
  * @author Alex
  */
 public class Function {

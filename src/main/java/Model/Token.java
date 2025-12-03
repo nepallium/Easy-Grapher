@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
+ * A token piece of an expression
  * @author Alex
  */
 public class Token {

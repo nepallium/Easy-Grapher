@@ -10,6 +10,7 @@ import static Model.Token.Type.*;
 import static java.lang.Double.parseDouble;
 
 /**
+ * Evaluates and converts postfix expressions
  * @author Alex
  */
 public class PostfixEvaluator {
