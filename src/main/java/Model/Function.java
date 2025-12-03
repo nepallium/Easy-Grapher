@@ -23,7 +23,7 @@ public class Function {
     private boolean isValid;
 
     private static final PostfixEvaluator evaluator = new PostfixEvaluator();
-    public static ExprEvaluator derivEvaluator;
+    public static ExprEvaluator derivEvaluator = new ExprEvaluator();
 
 
     public Function(String exprStr) {
@@ -95,10 +95,14 @@ public class Function {
      */
     public void evaluateDerivative() {
         if (this.isValid) {
+            try {
+                derivativeStr = derivEvaluator.eval(String.format("D(%s, x)", exprStr)).toString().toLowerCase();
+                derivativeStr = derivativeStr.replace("log", "ln");
+                derivative = new Function(derivativeStr);
 
-            derivativeStr = derivEvaluator.eval(String.format("D(%s, x)", exprStr)).toString().toLowerCase();
-            derivativeStr = derivativeStr.replace("log", "ln");
-            derivative = new Function(derivativeStr);
+            } catch (Exception e) {
+                return;
+            }
         }
     }
 

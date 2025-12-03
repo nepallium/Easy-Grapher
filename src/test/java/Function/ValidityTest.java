@@ -63,7 +63,7 @@ public class ValidityTest {
         Function f4 = new Function("epi");
         assertTrue("e*pi", f4.isValid());
 
-        Function f5 = new Function("ey");
+        Function f5 = new Function("ex");
         assertTrue("e*x", f5.isValid());
     }
 

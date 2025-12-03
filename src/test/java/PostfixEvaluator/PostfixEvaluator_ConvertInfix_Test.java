@@ -38,9 +38,9 @@ public class PostfixEvaluator_ConvertInfix_Test {
         assertArrayEquals(expected2, result2);
 
 //        unary + neglected
-        String arr3 = "+(x+y)";
+        String arr3 = "+(x+x)";
         String[] result3 = Token.toStrArray(pfEval.tokenize(arr3));
-        String[] expected3 = {"(", "x", "+", "y", ")"};
+        String[] expected3 = {"(", "x", "+", "x", ")"};
         assertArrayEquals(expected3, result3);
     }
 
@@ -69,9 +69,9 @@ public class PostfixEvaluator_ConvertInfix_Test {
         String[] expected2 = {"7", "4", "3", "~", "*", "*", "5", "1", "+", "/"};
         assertArrayEquals(expected2, result2);
 
-        String normal3 = "-(x+y)";
+        String normal3 = "-(x+x)";
         String[] result3 = Token.toStrArray(pfEval.convertInfixToPost(normal3));
-        String[] expected3 = {"x", "y", "+", "~"};
+        String[] expected3 = {"x", "x", "+", "~"};
         assertArrayEquals(expected3, result3);
 
         String normal4 = "4*-x";
@@ -79,14 +79,14 @@ public class PostfixEvaluator_ConvertInfix_Test {
         String[] expected4 = {"4", "x", "~", "*"};
         assertArrayEquals(expected4, result4);
 
-        String normal5 = "2*(-x-y)";
+        String normal5 = "2*(-x-x)";
         String[] result5 = Token.toStrArray(pfEval.convertInfixToPost(normal5));
-        String[] expected5 = {"2", "x", "~", "y", "-", "*"};
+        String[] expected5 = {"2", "x", "~", "x", "-", "*"};
         assertArrayEquals(expected5, result5);
 
-        String normal6 = "(4*x)-y";
+        String normal6 = "(4*x)-x";
         String[] result6 = Token.toStrArray(pfEval.convertInfixToPost(normal6));
-        String[] expected6 = {"4", "x", "*", "y", "-"};
+        String[] expected6 = {"4", "x", "*", "x", "-"};
         assertArrayEquals(expected6, result6);
     }
 

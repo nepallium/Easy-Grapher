@@ -131,7 +131,7 @@ public class InputMenuController implements Initializable {
                 if (newVal) {
                     firstFunction.evaluateDerivative();
                     Function derivative = firstFunction.getDerivative();
-                    if (derivative.isValid()) {
+                    if (derivative != null && derivative.isValid()) {
                         primaryController.setFirstFDerivative(derivative);
                         primaryController.redraw();
 //                        System.out.println(derivative.getExprStr());
@@ -145,7 +145,7 @@ public class InputMenuController implements Initializable {
             derivativeBox2.selectedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     Function derivative = secondFunction.getDerivative();
-                    if (derivative.isValid()) {
+                    if (derivative != null && derivative.isValid()) {
                         primaryController.setSecondFDerivative(derivative);
                         primaryController.redraw();
 //                        System.out.println(derivative.getExprStr());
