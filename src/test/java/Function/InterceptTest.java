@@ -8,6 +8,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Alex
+ */
 public class InterceptTest {
 
     @Test

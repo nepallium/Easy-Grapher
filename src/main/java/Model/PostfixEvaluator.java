@@ -13,29 +13,12 @@ import static java.lang.Double.parseDouble;
  * @author Alex
  */
 public class PostfixEvaluator {
-    private final static String UNARY_SUB = "~";
-    private final static String ADD = "+";
-    private final static String SUBTRACT = "-";
-    private final static String MULTIPLY = "*";
-    private final static String DIVIDE = "/";
-    private final static String EXPONENT = "^";
-    private final static String LN = "ln";
-    private final static String SIN = "sin";
-    private final static String COS = "cos";
-    private final static String TAN = "tan";
-    private final static String ASIN = "asin";
-    private final static String ACOS = "acos";
-    private final static String ATAN = "atan";
-    private final static String SQRT = "sqrt";
-    private final static String ABS = "abs";
-    private final static List<String> operators = Arrays.asList(
-            UNARY_SUB, ADD, SUBTRACT, MULTIPLY, DIVIDE,
-            EXPONENT, LN,
-            SIN, COS, TAN,
-            ASIN, ACOS, ATAN,
-            SQRT, ABS
-    );
-
+    /**
+     * Turns an expression string into an arraylist of tokens
+     *
+     * @param exprStr the string expression
+     * @return the converted arraylist
+     */
     public ArrayList<Token> tokenize(String exprStr) {
         if (exprStr == null || exprStr.isEmpty()) {
             return null;
@@ -65,6 +48,13 @@ public class PostfixEvaluator {
         return tokens;
     }
 
+    /**
+     * Checks if two tokens are implicitly multiplied (the multiplication sign is not written, but implied)
+     *
+     * @param prevToken the first token
+     * @param token     the second token
+     * @return whether to add a multiplication operator or not
+     */
     private static boolean isNeedMult(Token prevToken, Token token) {
         boolean prevIsVar = prevToken.type == VARIABLE;
         boolean prevIsConst = prevToken.type == CONSTANT;
@@ -97,7 +87,12 @@ public class PostfixEvaluator {
         return needMult;
     }
 
-
+    /**
+     * Splits an expression into different, tokenize-able pieces
+     *
+     * @param expr the expression to split
+     * @return the arraylist of split strings
+     */
     private ArrayList<String> splitIntoPieces(String expr) {
         if (expr == null || expr.isEmpty()) {
             return null;
@@ -148,6 +143,12 @@ public class PostfixEvaluator {
         return pieces;
     }
 
+    /**
+     * Converts an infix expression into postfix array of tokens and returns it
+     *
+     * @param exprStr the input infix expression
+     * @return the postfix tokenized array
+     */
     public Token[] convertInfixToPost(String exprStr) {
         if (exprStr == null || exprStr.isEmpty()) {
             return null;
@@ -202,6 +203,12 @@ public class PostfixEvaluator {
         return output.toArray(new Token[0]);
     }
 
+    /**
+     * Evaluates the value of a postfix array of tokens (no variable)
+     *
+     * @param postfix the input array of tokens in postfix notation
+     * @return the result of the evaluation
+     */
     public double evaluatePostfix(Token[] postfix) {
         Stack<Double> stack = new Stack<>();
 
@@ -234,6 +241,13 @@ public class PostfixEvaluator {
         return stack.peek();
     }
 
+    /**
+     * Evaluates the value of a postfix array of tokens (with variable)
+     *
+     * @param postfix the input array of tokens in postfix notation
+     * @param xVal    the value of x to replace it with in the postfix array
+     * @return the result of the evaluation
+     */
     public double evaluatePostfix(Token[] postfix, double xVal) {
         Stack<Double> stack = new Stack<>();
 

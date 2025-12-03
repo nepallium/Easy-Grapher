@@ -8,6 +8,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+/**
+ * @author Alex
+ */
 public class PostfixEvaluator_SpecialFunctions_Test {
 
     private PostfixEvaluator pfEval;

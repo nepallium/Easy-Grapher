@@ -3,6 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ * @author Alex
+ */
 public class Token {
     public Type type;
     public String value;
@@ -24,6 +27,13 @@ public class Token {
         NUMBER, OPERATOR, FUNCTION, VARIABLE, PARENTHESIS, CONSTANT
     }
 
+    /**
+     * Creates a token based on a piece. Uses prevToken to check for unary addition/negation
+     *
+     * @param piece     the current piece to convert
+     * @param prevToken the previous token
+     * @return the generated Token
+     */
     public static Token create(String piece, Token prevToken) {
 
         if (piece.length() == 1) {
@@ -119,6 +129,14 @@ public class Token {
         };
     }
 
+    /**
+     * Performs calculation between two numbers from args with the token operator
+     *
+     * @param token the token operator
+     * @param args  the numbers to perform operation on
+     * @return the result
+     * @throws Exception no valid operator
+     */
     public static double calculate(Token token, double[] args) throws Exception {
         double n1 = args[0];
         double n2 = token.arity == 2 ? args[1] : 0;
@@ -146,6 +164,13 @@ public class Token {
     }
 
     //    functions used during testing
+
+    /**
+     * Turns the arr of tokens into a str array
+     *
+     * @param tokens the arr of tokens
+     * @return the str array
+     */
     public static String[] toStrArray(Token[] tokens) {
         if (tokens == null) {
             return new String[0];
@@ -158,6 +183,12 @@ public class Token {
         return arr;
     }
 
+    /**
+     * Turns arraylist of tokens into a str array
+     *
+     * @param tokenList the arraylist of tokens
+     * @return the str array
+     */
     public static String[] toStrArray(ArrayList<Token> tokenList) {
         if (tokenList == null) return new String[0];
         String[] arr = new String[tokenList.size()];
@@ -168,6 +199,12 @@ public class Token {
         return arr;
     }
 
+    /**
+     * Turns an array of strings into a token array
+     *
+     * @param arr the array of string
+     * @return the token array
+     */
     public static Token[] fromStrArray(String[] arr) {
         if (arr == null) return new Token[0];
         Token[] tokens = new Token[arr.length];

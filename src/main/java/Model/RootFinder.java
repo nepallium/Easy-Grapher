@@ -6,15 +6,18 @@ import org.apache.commons.math3.analysis.solvers.BrentSolver;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Alex
+ */
 public class RootFinder {
 
     private static final PostfixEvaluator evaluator = new PostfixEvaluator();
 
     /**
-     * Finds all roots of a function in [min, max] using a scanning + BrentSolver approach.
+     * Finds all roots of a function in [min, max] using a scanning and BrentSolver approach.
      *
-     * @param f        f(x)
-     * @param g        g(x)
+     * @param f        the first fct
+     * @param g        the second fct
      * @param min      minimum x value of the search interval
      * @param max      maximum x value of the search interval
      * @param step     scanning step size (smaller = more precise)
@@ -76,6 +79,13 @@ public class RootFinder {
         return roots;
     }
 
+    /**
+     * Subtracts 2 functions and returns that function
+     *
+     * @param f the first fct
+     * @param g the second fct
+     * @return the subtraction fct
+     */
     private static Function subtractFcts(Function f, Function g) {
         if (f == null || g == null) {
             return null;

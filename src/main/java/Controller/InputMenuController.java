@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * @author Alex
+ * @author Sebastian
+ */
 public class InputMenuController implements Initializable {
     @FXML
     TextField fctInput1;
@@ -87,11 +91,12 @@ public class InputMenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
+            // debounced inputs using pause transition
             PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
 
             fctInput1.textProperty().addListener((observable, oldValue, newValue) -> {
                 derivativeBox1.selectedProperty().setValue(false);
-                
+
                 pause.setOnFinished(this::onFctSubmit);
                 pause.playFromStart();
             });
@@ -105,6 +110,7 @@ public class InputMenuController implements Initializable {
 
             primaryController = PrimaryController.getPrimaryController();
 
+            // change focusedInput selection and submits functions if input loses focus
             fctInput1.focusedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     focusedInput = fctInput1;
@@ -120,6 +126,7 @@ public class InputMenuController implements Initializable {
                 }
             });
 
+            // Adds listeners to derivative checkbox
             derivativeBox1.selectedProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
                     firstFunction.evaluateDerivative();
@@ -127,7 +134,7 @@ public class InputMenuController implements Initializable {
                     if (derivative.isValid()) {
                         primaryController.setFirstFDerivative(derivative);
                         primaryController.redraw();
-                        System.out.println(derivative.getExprStr());
+//                        System.out.println(derivative.getExprStr());
                     }
                 } else {
                     primaryController.setFirstFDerivative(new Function(null));
@@ -141,7 +148,7 @@ public class InputMenuController implements Initializable {
                     if (derivative.isValid()) {
                         primaryController.setSecondFDerivative(derivative);
                         primaryController.redraw();
-                        System.out.println(derivative.getExprStr());
+//                        System.out.println(derivative.getExprStr());
                     }
                 } else {
                     primaryController.setSecondFDerivative(new Function(null));
@@ -158,18 +165,33 @@ public class InputMenuController implements Initializable {
         Function.derivEvaluator = new ExprEvaluator();
     }
 
+    /**
+     * Change function 1's color
+     *
+     * @param event
+     */
     @FXML
     private void Function1ColorChanged(Event event) {
         primaryController.setFunction1Color(Function1Color.getValue());
         primaryController.redraw();
     }
 
+    /**
+     * Change function 2's color
+     *
+     * @param event
+     */
     @FXML
     private void Function2ColorChanged(Event event) {
         primaryController.setFunction2Color(Function2Color.getValue());
         primaryController.redraw();
     }
 
+    /**
+     * Draws the focused function on method call
+     *
+     * @param event
+     */
     @FXML
     private void onFctSubmit(Event event) {
         if (focusedInput == fctInput1) {
@@ -201,16 +223,21 @@ public class InputMenuController implements Initializable {
         primaryController.redraw();
     }
 
+    /**
+     * Tests validity of inputted function
+     *
+     * @param f    the input function
+     * @param view the ImageView linked to the input function
+     * @return whether the function is valid
+     */
     private boolean testGraph(Function f, ImageView view) {
         if (f.isValid()) {
             view.setImage(checkImg);
             return true;
-        }
-        else if (f.getExprStr().isBlank()) {
+        } else if (f.getExprStr().isBlank()) {
             view.setImage(null);
             return false;
-        }
-        else {
+        } else {
             view.setImage(warningImg);
             return false;
         }
@@ -265,6 +292,7 @@ public class InputMenuController implements Initializable {
 
     /**
      * Adjusts size of the first row's button to match
+     *
      * @param keyBtn the first row button
      */
     private void sizeFirstRowBtn(Button keyBtn) {
@@ -274,6 +302,7 @@ public class InputMenuController implements Initializable {
 
     /**
      * Clears the focused text field
+     *
      * @param keyBtn the clear button
      */
     private void handleClear(Button keyBtn) {
@@ -285,6 +314,7 @@ public class InputMenuController implements Initializable {
 
     /**
      * Deletes previous character or function
+     *
      * @param keyBtn the delete button
      */
     private void handleDel(Button keyBtn) {
@@ -314,6 +344,7 @@ public class InputMenuController implements Initializable {
 
     /**
      * Submits the input by calling onFctSubmit
+     *
      * @param keyBtn the enter button
      */
     private void handleEnter(Button keyBtn) {
@@ -322,8 +353,9 @@ public class InputMenuController implements Initializable {
 
     /**
      * Appends input to focused text field
+     *
      * @param keyBtn the pressed button
-     * @param input the string to append
+     * @param input  the string to append
      */
     private void handleAddChr(Button keyBtn, String input) {
         keyBtn.setOnAction(e -> {

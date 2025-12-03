@@ -11,6 +11,7 @@ import java.util.Objects;
 
 /**
  * JavaFX App
+ * @author Sebastian
  */
 public class App extends Application {
 
@@ -29,7 +30,7 @@ public class App extends Application {
 
             stage.setScene(scene);
         } catch (IOException err) {
-            System.out.println("Error loading main fxml file, " + err);
+//            System.out.println("Error loading main fxml file, " + err);
         }
 
         stage.show();

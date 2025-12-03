@@ -86,7 +86,7 @@ public class EasyGrapher extends Application {
         });
 
         canvasContainer.setOnScroll((ScrollEvent scroll) -> {
-            System.out.println(scroll.getDeltaX() + ", " + scroll.getDeltaY());
+//            System.out.println(scroll.getDeltaX() + ", " + scroll.getDeltaY());
 
             if (scroll.getDeltaY() < 0) {
                 xScale *= 0.9;

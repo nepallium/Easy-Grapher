@@ -7,6 +7,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Alex
+ */
 public class ValidityTest {
     @Before
     public void setUp() {

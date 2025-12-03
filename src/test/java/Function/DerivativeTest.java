@@ -7,6 +7,9 @@ import org.matheclipse.core.eval.ExprEvaluator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * @author Alex
+ */
 public class DerivativeTest {
     @Test
     public void testSymjaInitialization() {

@@ -7,6 +7,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * @author Alex
+ */
 public class PostfixEvaluator_Evaluate_Test {
 
     private PostfixEvaluator pfEval;
@@ -39,7 +42,7 @@ public class PostfixEvaluator_Evaluate_Test {
 
         String[] normal2 = {"7", "4", "3", "~", "*", "*", "5", "1", "+", "/"};
         double result2 = pfEval.evaluatePostfix(Token.fromStrArray(normal2));
-        assertEquals("-14",-14.0, result2, 0.001);
+        assertEquals("-14", -14.0, result2, 0.001);
 
         String[] normal3 = {"2", "5", "~", "7", "-", "*"};
         double result3 = pfEval.evaluatePostfix(Token.fromStrArray(normal3));

@@ -28,7 +28,11 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
-public class PrimaryController implements Initializable{
+/**
+ * @author Sebastian
+ * @author Alex
+ */
+public class PrimaryController implements Initializable {
     @Getter
     private static PrimaryController primaryController;
 
@@ -110,7 +114,8 @@ public class PrimaryController implements Initializable{
         RootGc = RootCanvas.getGraphicsContext2D();
 
         Function1Color = Color.valueOf("000000");
-        Function2Color = Color.valueOf("000000");;
+        Function2Color = Color.valueOf("000000");
+        ;
 
         firstFunction = new Function(null);
         secondFunction = new Function(null);
@@ -136,7 +141,8 @@ public class PrimaryController implements Initializable{
     }
 
     /**
-     * saves current mouse position (to know distance dragged when panning, and whether the user is hovering on a function or not)
+     * Saves current mouse position (to know distance dragged when panning, and whether the user is hovering on a function or not)
+     *
      * @param press the corresponding mouse press event
      */
     @FXML
@@ -160,6 +166,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * removes any point on a hovered function that is being displayed
+     *
      * @param release the corresponding mouse release event
      */
     @FXML
@@ -170,6 +177,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * updates graph offset (x, y) or shows point of a function, based on whether the mouse is hovered on a function or not
+     *
      * @param drag the corresponding mouse drag event
      */
     @FXML
@@ -193,6 +201,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * changes scale of the graph based on mouse scroll
+     *
      * @param scroll the corresponding mouse scroll event
      */
     @FXML
@@ -211,6 +220,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * Event triggered when user toggles show intercepts: toggles intercepts until one of the functions change
+     *
      * @param e the corresponding button event
      */
     @FXML
@@ -224,6 +234,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * converts a pixel amount to the corresponding mathematical x value (based on the function, scale, offset)
+     *
      * @param px the pixel value of x in the graph
      * @return the corresponding mathematical value of x at the specific spot on the canvas
      */
@@ -233,6 +244,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * converts a pixel amount to the corresponding mathematical y value (based on the function, scale, offset)
+     *
      * @param py the pixel value of y in the graph
      * @return the corresponding mathematical value of y at the specific spot on the canvas
      */
@@ -242,6 +254,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * converts a mathematical x value to its corresponding value on the graph (in pixels, distance from left canvas)
+     *
      * @param x the mathematical value of x
      * @return the pixel value of where the x should be
      */
@@ -251,6 +264,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * converts a mathematical y value to its corresponding value on the graph (in pixels, distance from top of canvas)
+     *
      * @param y the mathematical value of y
      * @return the pixel value of where the y should be
      */
@@ -287,6 +301,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * checks if the mouse is within range of a function to display the current hovered point
+     *
      * @param function the function to check
      * @return true or false: the mouse is within range
      */
@@ -305,6 +320,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * finds the ideal tick step based on the scale that is easy to navigate/understand
+     *
      * @param scale the current scale of the graph
      * @return the tick step (math distance between ticks) that the graph should follow
      */
@@ -317,16 +333,17 @@ public class PrimaryController implements Initializable{
         double base = mathUnit / exp;
 
         double closestPerfect;
-        if (base < 1.5)      closestPerfect = 1;
+        if (base < 1.5) closestPerfect = 1;
         else if (base < 3.5) closestPerfect = 2;
         else if (base < 7.5) closestPerfect = 5;
-        else                     closestPerfect = 10;
+        else closestPerfect = 10;
 
         return closestPerfect * exp;
     }
 
     /**
      * gets the amount of squares that should be between two ticks on a graph based on the scale
+     *
      * @param scale the current scale of the graph
      * @return the number of squares that should be between two ticks
      */
@@ -345,6 +362,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * gets the degree of a value (10^x) / amount of zeros
+     *
      * @param scale the current scale of the graph
      * @return the degree of the value
      */
@@ -360,6 +378,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * draws the x and y axes
+     *
      * @param gc the graphics context in which the axes should be contained
      */
     public void drawAxes(GraphicsContext gc) {
@@ -380,6 +399,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * draws the current hovered point if the user is mouse down on a function
+     *
      * @param gc the graphics context in which the point should be contained
      */
     public void drawCoordinate(GraphicsContext gc) {
@@ -401,6 +421,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * draws the ticks for the vertical and horizontal axes (if they should be in the graph)
+     *
      * @param gc the graphics context in which the ticks should be contained
      */
     public void drawAxeIncrements(GraphicsContext gc) {
@@ -421,12 +442,12 @@ public class PrimaryController implements Initializable{
         for (double x = firstX; x <= max_x; x += xStep) {
             double converted_x = xToPixel(x);
 
-            if (Math.abs(converted_x - xToPixel(0)) < 1 ) {
+            if (Math.abs(converted_x - xToPixel(0)) < 1) {
                 continue;
             }
 
             if (axisYPixel >= 0 && axisYPixel <= canvasHeight) {
-                gc.fillText((exp > -3) ? String.format("%.2f", x): String.format("%1.0f * 10^%d", x / Math.pow(10, exp), exp)
+                gc.fillText((exp > -3) ? String.format("%.2f", x) : String.format("%1.0f * 10^%d", x / Math.pow(10, exp), exp)
                         , converted_x + 3, axisYPixel - 3);
                 gc.strokeLine(converted_x, axisYPixel - 6, converted_x, axisYPixel + 6);
             }
@@ -441,12 +462,12 @@ public class PrimaryController implements Initializable{
         for (double y = firstY; y <= max_y; y += yStep) {
             double converted_y = yToPixel(y);
 
-            if (Math.abs(converted_y - yToPixel(0)) < 1 ) {
+            if (Math.abs(converted_y - yToPixel(0)) < 1) {
                 continue;
             }
 
             if (axisXPixel >= 0 && axisXPixel <= canvasWidth) {
-                gc.fillText((exp > -3) ? String.format("%.2f", y): String.format("%.0f * 10^%d", y / Math.pow(10, exp), exp)
+                gc.fillText((exp > -3) ? String.format("%.2f", y) : String.format("%.0f * 10^%d", y / Math.pow(10, exp), exp)
                         , axisXPixel + 4, converted_y - 4);
                 gc.strokeLine(axisXPixel - 6, converted_y, axisXPixel + 6, converted_y);
             }
@@ -457,6 +478,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * fills the pane with squares to replicate graph paper
+     *
      * @param gc the graphics context in which the squares should be contained
      */
     public void drawLines(GraphicsContext gc) {
@@ -485,7 +507,8 @@ public class PrimaryController implements Initializable{
 
     /**
      * draws all vertical lines of the graph to replicate graph paper
-     * @param gc the corresponding graphics context
+     *
+     * @param gc   the corresponding graphics context
      * @param step the distance between each line
      */
     private void drawLinesX(GraphicsContext gc, double step) {
@@ -502,7 +525,8 @@ public class PrimaryController implements Initializable{
 
     /**
      * draws all horizontal lines of the graph to replicate graph paper
-     * @param gc the corresponding graphics context
+     *
+     * @param gc   the corresponding graphics context
      * @param step the distance between each line
      */
     private void drawLinesY(GraphicsContext gc, double step) {
@@ -519,9 +543,10 @@ public class PrimaryController implements Initializable{
 
     /**
      * Draws a function in a corresponding canvas
-     * @param gc the graphics context of the canvas in which the function will be contained
-     * @param f the function when drawing
-     * @param color the color of the curve
+     *
+     * @param gc      the graphics context of the canvas in which the function will be contained
+     * @param f       the function when drawing
+     * @param color   the color of the curve
      * @param opacity the opacity of the curve (1 for regular functions, 0.5 for derivatives)
      */
     public void drawFunction(GraphicsContext gc, Function f, Color color, double opacity) {
@@ -552,6 +577,7 @@ public class PrimaryController implements Initializable{
 
     /**
      * Draws intercepts of the two functions (firstFunction, secondFunction)
+     *
      * @param gc The graphics context of the canvas in which intercepts should be contained
      */
     private void drawIntercepts(GraphicsContext gc) {

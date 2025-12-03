@@ -5,6 +5,9 @@ import org.matheclipse.core.eval.ExprEvaluator;
 
 import java.util.EmptyStackException;
 
+/**
+ * @author Alex
+ */
 public class Function {
     @Getter
     private String exprStr;
@@ -34,6 +37,12 @@ public class Function {
         this.isValid = true;
     }
 
+    /**
+     * Evaluates f(x)
+     *
+     * @param x the x value
+     * @return the evaluation of f(x)
+     */
     public double valueAt(double x) {
         if (postfix == null) {
             return Double.NaN;
@@ -41,6 +50,11 @@ public class Function {
         return evaluator.evaluatePostfix(this.postfix, x);
     }
 
+    /**
+     * Checks if the expression string creates a valid function or not
+     *
+     * @return whether the function is valid
+     */
     public boolean isValid() {
         if (exprStr == null || exprStr.isBlank()) {
             this.isValid = false;
@@ -51,13 +65,11 @@ public class Function {
             if (postfix == null) {
                 try {
                     postfix = evaluator.convertInfixToPost(exprStr);
-                }
-                catch (EmptyStackException e) {
+                } catch (EmptyStackException e) {
 //                    System.out.println("bad parenthesis");
                     this.isValid = false;
                     return false;
-                }
-                catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException e) {
 //                    System.out.println("bad symbol");
                     this.isValid = false;
                     return false;
@@ -76,14 +88,9 @@ public class Function {
         }
     }
 
-    public Token[] getPostfix() {
-        if (postfix == null) {
-            isValid();
-        }
-
-        return postfix;
-    }
-
+    /**
+     * Evaluates the derivative of f(x) and sets it
+     */
     public void evaluateDerivative() {
         if (this.isValid) {
 
@@ -91,6 +98,14 @@ public class Function {
             derivativeStr = derivativeStr.replace("log", "ln");
             derivative = new Function(derivativeStr);
         }
+    }
+
+    public Token[] getPostfix() {
+        if (postfix == null) {
+            isValid();
+        }
+
+        return postfix;
     }
 
     public Function getDerivative() {
