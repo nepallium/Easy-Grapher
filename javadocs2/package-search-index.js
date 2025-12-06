@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.vanier.easygrapher","l":"Controller"},{"m":"com.vanier.easygrapher","l":"Main"},{"m":"com.vanier.easygrapher","l":"Model"}];updateSearchResults();

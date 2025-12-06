@@ -1,1 +1,0 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"Main","l":"App"},{"p":"Model","l":"Function"},{"p":"Controller","l":"InputMenuController"},{"p":"Model","l":"PostfixEvaluator"},{"p":"Controller","l":"PrimaryController"},{"p":"Model","l":"RootFinder"},{"p":"Model","l":"Token"},{"p":"Model","l":"Token.Type"}];updateSearchResults();

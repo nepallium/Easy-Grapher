@@ -1,1 +1,0 @@
-moduleSearchIndex = [{"l":"com.vanier.easygrapher"}];updateSearchResults();
