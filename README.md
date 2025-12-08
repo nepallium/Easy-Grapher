@@ -64,13 +64,13 @@ View, and Controller components.
 
 ### **Alex Huang**
 
-* **Model Logic:** Handled function parsing and evaluation.
-* **UI Construction:** Built the primary FXML layout and the on-screen keyboard.
-* **Interactive Features:** Implemented the logic for zooming, panning, and scrolling the graph.
+* **Model Logic:** Handled function parsing, validity, conversion from postfix to infix (and vice versa), and evaluation.
+* **Derivative Calculation**: Obtaining derivatives from a function and handling validity of the derivative and evaluation.
+* **UI Construction:** Built the on-screen keyboard.
+* **Intercept calculation**: Implemented the logic for computing the intercepts of the two input functions.
 
 ### **Sebastian Bobos**
 
-* **Graph Rendering:** Developed the core logic for drawing graphs and visual elements.
-* **Controller Logic:** Managed input handling and graph color changes.
-* **Advanced Analysis:** Implemented logic for calculating and displaying intersection points and clicking curves to see
-  coordinates.
+* **Graph Rendering:** Developed the core logic for drawing graph axes, axe increments value display and function display. Developped a conversion from math to pixels (and vice versa) based on offset and scale for precise and accurate value display.
+* **Event Handling:** Managed color changing, input changing, and added a debounce-mechanic to input for smooth function inputs. Refreshes the graph on change.
+* **Dynamic Graph Creation**: Implemented the logic for zooming, panning, and scrolling the graph.
